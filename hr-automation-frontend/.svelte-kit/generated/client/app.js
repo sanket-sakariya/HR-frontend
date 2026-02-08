@@ -27,7 +27,8 @@ export const nodes = [
 	() => import('./nodes/23'),
 	() => import('./nodes/24'),
 	() => import('./nodes/25'),
-	() => import('./nodes/26')
+	() => import('./nodes/26'),
+	() => import('./nodes/27')
 ];
 
 export const server_loads = [];
@@ -36,15 +37,16 @@ export const dictionary = {
 		"/": [5],
 		"/(dashboard)/analytics": [8,[3]],
 		"/apply/[job_id]": [21],
-		"/aptitude/test/[job_id]/[test_id]": [22],
+		"/aptitude/test/[job_id]/[test_id]": [23],
+		"/aptitude/[job_id]": [22],
 		"/(dashboard)/candidates": [9,[3]],
 		"/(dashboard)/candidates/[candidate_id]": [10,[3]],
 		"/(dashboard)/company": [11,[3]],
 		"/(dashboard)/dashboard": [12,[3]],
-		"/interview/hr/[session]": [23,[4]],
-		"/interview/hr/[session]/results": [24,[4]],
-		"/interview/technical/[session]": [25,[4]],
-		"/interview/technical/[session]/results": [26,[4]],
+		"/interview/hr/[session]": [24,[4]],
+		"/interview/hr/[session]/results": [25,[4]],
+		"/interview/technical/[session]": [26,[4]],
+		"/interview/technical/[session]/results": [27,[4]],
 		"/(dashboard)/jobs": [13,[3]],
 		"/(dashboard)/jobs/new": [19,[3]],
 		"/(dashboard)/jobs/[job_id]": [14,[3]],

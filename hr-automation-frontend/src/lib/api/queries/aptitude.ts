@@ -2,6 +2,22 @@ import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-qu
 import { api } from '../client';
 import type { AptitudeTest } from '../generated';
 
+// Generate test entry URL for a job (used by candidates)
+export function useGenerateAptitudeTest(jobId: string | null) {
+  return createQuery({
+    queryKey: ['aptitude-generate-test', jobId],
+    queryFn: async () => {
+      if (!jobId) throw new Error('Job ID is required');
+      const response = await api.GET('/aptitude/generate-test/{job_requirement_id}', {
+        params: { path: { job_requirement_id: jobId } }
+      });
+      if (response.error) throw new Error(response.error.message || 'Failed to generate aptitude test');
+      return response.data;
+    },
+    enabled: !!jobId
+  });
+}
+
 export function useCreateAptitudeTest() {
   const queryClient = useQueryClient();
 

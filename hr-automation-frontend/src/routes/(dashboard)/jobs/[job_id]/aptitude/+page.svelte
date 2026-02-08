@@ -82,11 +82,9 @@
   }
 
   function copyCandidateUrl() {
-    if (createdTest?.aptitude_test_id) {
-      const url = `${window.location.origin}/aptitude/test/${jobId}/${createdTest.aptitude_test_id}`;
-      navigator.clipboard.writeText(url);
-      toast.success('Candidate test URL copied to clipboard');
-    }
+    const url = `${window.location.origin}/aptitude/${jobId}`;
+    navigator.clipboard.writeText(url);
+    toast.success('Candidate test URL copied to clipboard');
   }
 </script>
 
@@ -175,10 +173,10 @@
         <div class="space-y-4">
           <!-- Candidate Test URL -->
           <div>
-            <label class="text-xs text-obsidian-500 mb-1 block">Candidate Test URL (Frontend)</label>
+            <label class="text-xs text-obsidian-500 mb-1 block">Candidate Test URL</label>
             <div class="flex items-center gap-2">
               <div class="flex-1 px-4 py-3 rounded-lg bg-obsidian-800 border border-obsidian-700 font-mono text-sm text-obsidian-300 truncate">
-                {window.location.origin}/aptitude/test/{jobId}/{createdTest.aptitude_test_id}
+                {window.location.origin}/aptitude/{jobId}
               </div>
               <Button variant="outline" onclick={copyCandidateUrl}>
                 <Copy class="w-4 h-4" />

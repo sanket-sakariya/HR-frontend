@@ -278,6 +278,16 @@ export interface paths {
       };
     };
   };
+  '/aptitude/generate-test/{job_requirement_id}': {
+    get: {
+      parameters: {
+        path: { job_requirement_id: string };
+      };
+      responses: {
+        200: { content: { 'application/json': components['schemas']['ApiResponse'] } };
+      };
+    };
+  };
   '/aptitude/create/{job_requirement_id}': {
     post: {
       parameters: {
