@@ -120,8 +120,16 @@ export function useSelectTopAptitudeCandidates() {
 }
 
 // Alias exports for convenience
+export const createAptitudeTestMutation = () => useCreateAptitudeTest();
 export const createAptitudeTestsQuery = (jobId: string | null) => {
-  // Returns a query that fetches aptitude test form for a job
-  return useAptitudeTestForm(jobId);
+  // Note: There's no endpoint to list all tests. Use localStorage to persist test info after creation.
+  return createQuery({
+    queryKey: ['aptitude-tests', jobId],
+    queryFn: async () => {
+      // Return empty array - tests should be stored locally after creation
+      return [];
+    },
+    enabled: false // Always disabled since there's no list endpoint
+  });
 };
 export const createCreateAptitudeTestMutation = () => useCreateAptitudeTest();

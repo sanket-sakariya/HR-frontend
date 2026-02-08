@@ -25,7 +25,7 @@
         </div>
       </div>
     {/each}
-  {:else if $candidatesQuery.data?.data?.length === 0}
+  {:else if $candidatesQuery.data?.data?.data?.length === 0}
     <div class="text-center py-8">
       <p class="text-slate-400">No candidates yet</p>
       <p class="text-sm text-slate-500 mt-1">
@@ -33,7 +33,7 @@
       </p>
     </div>
   {:else}
-    {#each ($candidatesQuery.data?.data || []).slice(0, 5) as candidate (candidate.candidate_id)}
+    {#each ($candidatesQuery.data?.data?.data || []).slice(0, 5) as candidate (candidate.candidate_id)}
       <a
         href="/candidates/{candidate.candidate_id}"
         class="flex items-center gap-4 p-4 rounded-lg bg-obsidian-800/50 hover:bg-obsidian-800 border border-slate-800/50 hover:border-slate-700 transition-all"
@@ -59,13 +59,13 @@
         </div>
 
         <!-- Score -->
-        {#if candidate.resume_score}
-          <ScoreGauge score={candidate.resume_score} size="sm" />
+        {#if candidate.candidate_resume_score}
+          <ScoreGauge score={candidate.candidate_resume_score} size="sm" />
         {/if}
       </a>
     {/each}
 
-    {#if ($candidatesQuery.data?.pagination?.total_count || 0) > 5}
+    {#if ($candidatesQuery.data?.data?.pagination?.total_count || 0) > 5}
       <a
         href="/candidates"
         class="block text-center py-3 text-sm text-royal-400 hover:text-royal-300 font-medium"

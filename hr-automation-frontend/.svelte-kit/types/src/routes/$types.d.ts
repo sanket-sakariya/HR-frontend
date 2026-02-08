@@ -12,8 +12,8 @@ type EnsureDefined<T> = T extends null | undefined ? {} : T;
 type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends U ? keyof U : never> = U extends unknown ? { [P in Exclude<A, keyof U>]?: never } & U : never;
 export type Snapshot<T = any> = Kit.Snapshot<T>;
 type PageParentData = EnsureDefined<LayoutData>;
-type LayoutRouteId = RouteId | "/" | "/(auth)/login" | "/(auth)/register" | "/(dashboard)/analytics" | "/(dashboard)/candidates" | "/(dashboard)/candidates/[candidate_id]" | "/(dashboard)/company" | "/(dashboard)/dashboard" | "/(dashboard)/jobs" | "/(dashboard)/jobs/[job_id]" | "/(dashboard)/jobs/[job_id]/aptitude" | "/(dashboard)/jobs/[job_id]/edit" | "/(dashboard)/jobs/[job_id]/hr" | "/(dashboard)/jobs/[job_id]/technical" | "/(dashboard)/jobs/new" | "/(dashboard)/settings" | "/apply/[job_id]" | "/interview/hr/[session]" | "/interview/hr/[session]/results" | "/interview/technical/[session]" | "/interview/technical/[session]/results" | null
-type LayoutParams = RouteParams & { candidate_id?: string; job_id?: string; session?: string }
+type LayoutRouteId = RouteId | "/" | "/(auth)/login" | "/(auth)/register" | "/(dashboard)/analytics" | "/(dashboard)/candidates" | "/(dashboard)/candidates/[candidate_id]" | "/(dashboard)/company" | "/(dashboard)/dashboard" | "/(dashboard)/jobs" | "/(dashboard)/jobs/[job_id]" | "/(dashboard)/jobs/[job_id]/aptitude" | "/(dashboard)/jobs/[job_id]/edit" | "/(dashboard)/jobs/[job_id]/hr" | "/(dashboard)/jobs/[job_id]/technical" | "/(dashboard)/jobs/new" | "/(dashboard)/settings" | "/apply/[job_id]" | "/aptitude/test/[job_id]/[test_id]" | "/interview/hr/[session]" | "/interview/hr/[session]/results" | "/interview/technical/[session]" | "/interview/technical/[session]/results" | null
+type LayoutParams = RouteParams & { candidate_id?: string; job_id?: string; test_id?: string; session?: string }
 type LayoutParentData = EnsureDefined<{}>;
 
 export type PageServerData = null;

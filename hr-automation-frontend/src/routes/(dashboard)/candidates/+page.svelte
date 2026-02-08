@@ -18,39 +18,39 @@
 
   // Filter and sort candidates
   const filteredCandidates = $derived(() => {
-    let result = $candidatesQuery.data || [];
+    let result = $candidatesQuery.data?.data?.data || [];
 
     // Search filter
     if (search) {
       const searchLower = search.toLowerCase();
-      result = result.filter(c => 
-        c.name?.toLowerCase().includes(searchLower) ||
+      result = result.filter((c: any) => 
+        c.first_name?.toLowerCase().includes(searchLower) ||
+        c.last_name?.toLowerCase().includes(searchLower) ||
         c.email?.toLowerCase().includes(searchLower) ||
-        c.current_position?.toLowerCase().includes(searchLower) ||
-        c.skills?.some(s => s.toLowerCase().includes(searchLower))
+        c.skills?.toLowerCase().includes(searchLower)
       );
     }
 
     // Status filter
     if (status) {
-      result = result.filter(c => c.status === status);
+      result = result.filter((c: any) => c.status === status);
     }
 
     // Sort
-    result = [...result].sort((a, b) => {
+    result = [...result].sort((a: any, b: any) => {
       switch (sortBy) {
         case 'newest':
           return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
         case 'oldest':
           return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
         case 'score_high':
-          return (b.ai_score || 0) - (a.ai_score || 0);
+          return (b.candidate_resume_score || 0) - (a.candidate_resume_score || 0);
         case 'score_low':
-          return (a.ai_score || 0) - (b.ai_score || 0);
+          return (a.candidate_resume_score || 0) - (b.candidate_resume_score || 0);
         case 'name_asc':
-          return (a.name || '').localeCompare(b.name || '');
+          return (`${a.first_name} ${a.last_name}` || '').localeCompare(`${b.first_name} ${b.last_name}` || '');
         case 'name_desc':
-          return (b.name || '').localeCompare(a.name || '');
+          return (`${b.first_name} ${b.last_name}` || '').localeCompare(`${a.first_name} ${a.last_name}` || '');
         default:
           return 0;
       }

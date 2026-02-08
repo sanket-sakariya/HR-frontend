@@ -91,16 +91,39 @@
     { id: 'hr', label: 'HR', icon: UserCheck }
   ];
 
-  // Group candidates by status
+  // Helper function to derive candidate status from test results
+  function getCandidateStatus(candidate: any): string {
+    // If HR interview passed -> hire_recommended
+    if (candidate.hr_interview_result === 'pass') return 'hire_recommended';
+    // If technical passed but waiting for HR -> hr_eligible
+    if (candidate.technical_test_result === 'pass') return 'hr_eligible';
+    // If aptitude passed but waiting for technical -> technical_eligible
+    if (candidate.aptitude_test_result === 'pass') return 'technical_eligible';
+    // If has resume score (screened) but no aptitude yet -> aptitude_eligible
+    if (candidate.candidate_resume_score != null && candidate.candidate_resume_score > 0) return 'aptitude_eligible';
+    // Default: just applied
+    return 'applied';
+  }
+
+  // Group candidates by derived status
   let candidatesByStatus = $derived.by(() => {
-    const candidates = $candidatesQuery.data?.data || [];
-    return {
-      applied: candidates.filter((c: any) => c.status === 'applied'),
-      aptitude_eligible: candidates.filter((c: any) => c.status === 'aptitude_eligible'),
-      technical_eligible: candidates.filter((c: any) => c.status === 'technical_eligible'),
-      hr_eligible: candidates.filter((c: any) => c.status === 'hr_eligible'),
-      hire_recommended: candidates.filter((c: any) => c.status === 'hire_recommended')
+    const candidates = $candidatesQuery.data?.data?.data || [];
+    const grouped = {
+      applied: [] as any[],
+      aptitude_eligible: [] as any[],
+      technical_eligible: [] as any[],
+      hr_eligible: [] as any[],
+      hire_recommended: [] as any[]
     };
+    
+    candidates.forEach((c: any) => {
+      const status = getCandidateStatus(c);
+      if (grouped[status as keyof typeof grouped]) {
+        grouped[status as keyof typeof grouped].push(c);
+      }
+    });
+    
+    return grouped;
   });
 </script>
 
@@ -293,7 +316,7 @@
           <!-- Candidates Pipeline -->
           {#if $candidatesQuery.isLoading}
             <Skeleton class="h-48" />
-          {:else if ($candidatesQuery.data?.data?.length || 0) === 0}
+          {:else if ($candidatesQuery.data?.data?.data?.length || 0) === 0}
             <div class="text-center py-12">
               <Users class="w-12 h-12 text-slate-600 mx-auto mb-4" />
               <h4 class="text-lg font-medium text-slate-300 mb-2">No candidates yet</h4>
@@ -318,15 +341,15 @@
                           <p class="text-sm text-slate-200 truncate">
                             {candidate.first_name} {candidate.last_name}
                           </p>
-                          {#if candidate.resume_score}
+                          {#if candidate.candidate_resume_score}
                             <div class="flex items-center gap-2 mt-1">
                               <div class="flex-1 h-1 bg-slate-700 rounded-full overflow-hidden">
                                 <div 
                                   class="h-full bg-royal-500 rounded-full"
-                                  style="width: {candidate.resume_score}%"
+                                  style="width: {candidate.candidate_resume_score}%"
                                 ></div>
                               </div>
-                              <span class="text-xs text-slate-500">{candidate.resume_score}%</span>
+                              <span class="text-xs text-slate-500">{candidate.candidate_resume_score.toFixed(1)}%</span>
                             </div>
                           {/if}
                         </a>
