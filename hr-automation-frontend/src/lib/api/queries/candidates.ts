@@ -1,5 +1,5 @@
 import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
-import { api, API_URLS } from '../client';
+import { api, API_URLS, fetchWithAuth } from '../client';
 import type { Candidate } from '../generated';
 
 export function useCandidates(params?: {
@@ -54,7 +54,7 @@ export function useApplicationForm(jobId: string | null) {
 export function useSubmitApplication() {
   return createMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await fetch(`${API_URLS.main}/candidates/apply`, {
+      const response = await fetchWithAuth(`${API_URLS.main}/candidates/apply`, {
         method: 'POST',
         body: formData
       });

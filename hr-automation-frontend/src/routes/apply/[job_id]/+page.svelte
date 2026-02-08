@@ -28,18 +28,17 @@
 
   let currentStep = $state(1);
   let formData = $state({
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     phone: '',
-    current_position: '',
-    experience_years: '',
+    current_location: '',
+    willing_to_relocate: 'false',
+    skills: '',
     expected_salary: '',
     notice_period: '',
-    location: '',
     linkedin_url: '',
-    portfolio_url: '',
-    cover_letter: '',
-    skills: [] as string[]
+    portfolio_url: ''
   });
 
   let resumeFile = $state<File | null>(null);
@@ -48,37 +47,40 @@
   const job = $derived($jobQuery.data);
 
   async function handleSubmit() {
-    if (!formData.name || !formData.email || !resumeFile) {
-      toast.error('Please fill in all required fields');
+    if (!formData.first_name || !formData.last_name || !formData.email || !resumeFile) {
+      toast.error('Please fill in all required fields', {
+        description: 'First name, last name, email and resume are required'
+      });
       return;
     }
 
     try {
-      // Create form data for file upload
+      // Create form data for multipart/form-data upload
       const submitData = new FormData();
-      submitData.append('name', formData.name);
+      submitData.append('job_requirement_id', jobId);
+      submitData.append('first_name', formData.first_name);
+      submitData.append('last_name', formData.last_name);
       submitData.append('email', formData.email);
-      submitData.append('phone', formData.phone);
-      submitData.append('current_position', formData.current_position);
-      submitData.append('experience_years', formData.experience_years);
-      submitData.append('expected_salary', formData.expected_salary);
-      submitData.append('notice_period', formData.notice_period);
-      submitData.append('location', formData.location);
-      submitData.append('linkedin_url', formData.linkedin_url);
-      submitData.append('portfolio_url', formData.portfolio_url);
-      submitData.append('cover_letter', formData.cover_letter);
       submitData.append('resume', resumeFile);
-      submitData.append('job_id', jobId);
+      
+      // Optional fields
+      if (formData.phone) submitData.append('phone', formData.phone);
+      if (formData.current_location) submitData.append('current_location', formData.current_location);
+      if (formData.willing_to_relocate) submitData.append('willing_to_relocate', formData.willing_to_relocate);
+      if (formData.skills) submitData.append('skills', formData.skills);
+      if (formData.expected_salary) submitData.append('expected_salary', formData.expected_salary);
+      if (formData.notice_period) submitData.append('notice_period', formData.notice_period);
+      if (formData.linkedin_url) submitData.append('linkedin_url', formData.linkedin_url);
+      if (formData.portfolio_url) submitData.append('portfolio_url', formData.portfolio_url);
 
-      await $applyMutation.mutateAsync({
-        jobId,
-        data: formData as any
-      });
+      await $applyMutation.mutateAsync(submitData);
 
       submitted = true;
       toast.success('Application submitted successfully!');
-    } catch (error) {
-      toast.error('Failed to submit application. Please try again.');
+    } catch (error: any) {
+      toast.error('Failed to submit application', {
+        description: error.message || 'Please try again.'
+      });
     }
   }
 
@@ -244,14 +246,26 @@
               <div class="space-y-4">
                 <div class="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <Label for="name">Full Name *</Label>
+                    <Label for="first_name">First Name *</Label>
                     <Input
-                      id="name"
-                      bind:value={formData.name}
-                      placeholder="John Doe"
+                      id="first_name"
+                      bind:value={formData.first_name}
+                      placeholder="John"
                       required
                     />
                   </div>
+                  <div>
+                    <Label for="last_name">Last Name *</Label>
+                    <Input
+                      id="last_name"
+                      bind:value={formData.last_name}
+                      placeholder="Doe"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
                   <div>
                     <Label for="email">Email Address *</Label>
                     <Input
@@ -262,9 +276,6 @@
                       required
                     />
                   </div>
-                </div>
-
-                <div class="grid sm:grid-cols-2 gap-4">
                   <div>
                     <Label for="phone">Phone Number</Label>
                     <Input
@@ -274,13 +285,27 @@
                       placeholder="+1 (555) 000-0000"
                     />
                   </div>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <Label for="location">Location</Label>
+                    <Label for="location">Current Location</Label>
                     <Input
                       id="location"
-                      bind:value={formData.location}
+                      bind:value={formData.current_location}
                       placeholder="City, Country"
                     />
+                  </div>
+                  <div>
+                    <Label for="relocate">Willing to Relocate?</Label>
+                    <select
+                      id="relocate"
+                      bind:value={formData.willing_to_relocate}
+                      class="w-full px-3 py-2 bg-obsidian-800 border border-obsidian-700 rounded-lg text-obsidian-100 focus:border-royal-500 focus:outline-none"
+                    >
+                      <option value="false">No</option>
+                      <option value="true">Yes</option>
+                    </select>
                   </div>
                 </div>
 
@@ -310,26 +335,7 @@
             <!-- Step 2: Experience -->
             {#if currentStep === 2}
               <div class="space-y-4">
-                <div>
-                  <Label for="position">Current Position</Label>
-                  <Input
-                    id="position"
-                    bind:value={formData.current_position}
-                    placeholder="Software Engineer at Company"
-                  />
-                </div>
-
-                <div class="grid sm:grid-cols-3 gap-4">
-                  <div>
-                    <Label for="experience">Years of Experience</Label>
-                    <Input
-                      id="experience"
-                      type="number"
-                      min="0"
-                      bind:value={formData.experience_years}
-                      placeholder="5"
-                    />
-                  </div>
+                <div class="grid sm:grid-cols-2 gap-4">
                   <div>
                     <Label for="salary">Expected Salary</Label>
                     <Input
@@ -349,12 +355,12 @@
                 </div>
 
                 <div>
-                  <Label for="cover_letter">Cover Letter</Label>
+                  <Label for="skills">Skills (comma-separated)</Label>
                   <Textarea
-                    id="cover_letter"
-                    bind:value={formData.cover_letter}
-                    placeholder="Tell us why you're interested in this role and what makes you a great fit..."
-                    rows={6}
+                    id="skills"
+                    bind:value={formData.skills}
+                    placeholder="JavaScript, Python, React, Node.js, SQL..."
+                    rows={4}
                   />
                 </div>
               </div>
@@ -401,15 +407,15 @@
                   <dl class="grid sm:grid-cols-2 gap-2 text-sm">
                     <div>
                       <dt class="text-obsidian-500">Name</dt>
-                      <dd class="text-obsidian-200">{formData.name || '-'}</dd>
+                      <dd class="text-obsidian-200">{formData.first_name} {formData.last_name || '-'}</dd>
                     </div>
                     <div>
                       <dt class="text-obsidian-500">Email</dt>
                       <dd class="text-obsidian-200">{formData.email || '-'}</dd>
                     </div>
                     <div>
-                      <dt class="text-obsidian-500">Experience</dt>
-                      <dd class="text-obsidian-200">{formData.experience_years || '0'} years</dd>
+                      <dt class="text-obsidian-500">Location</dt>
+                      <dd class="text-obsidian-200">{formData.current_location || '-'}</dd>
                     </div>
                     <div>
                       <dt class="text-obsidian-500">Expected Salary</dt>
