@@ -1,6 +1,6 @@
 <script lang="ts">
   import { authStore } from '$lib/stores/auth.svelte';
-  import { useCompany } from '$lib/api/queries/companies';
+  import { useCompanies, useCompany } from '$lib/api/queries/companies';
   import { useJobRequirements } from '$lib/api/queries/jobs';
   import StatCard from '$lib/components/dashboard/StatCard.svelte';
   import JobsOverview from '$lib/components/dashboard/JobsOverview.svelte';
@@ -9,8 +9,23 @@
   import Button from '$lib/components/ui/Button.svelte';
   import { Plus, Briefcase, Users, Video, CheckCircle } from 'lucide-svelte';
 
-  const companyQuery = useCompany(authStore.companyId);
-  const jobsQuery = useJobRequirements(authStore.companyId);
+  // First fetch companies for this user/workspace
+  const companiesQuery = useCompanies({ limit: 1 });
+  
+  // Get company ID from stored value OR from companies list
+  const companyId = $derived(
+    authStore.companyId || $companiesQuery.data?.data?.[0]?.company_id || null
+  );
+
+  // Update authStore when we get company from API
+  $effect(() => {
+    if (!authStore.companyId && $companiesQuery.data?.data?.[0]) {
+      authStore.setCompany($companiesQuery.data.data[0]);
+    }
+  });
+
+  const companyQuery = useCompany(companyId);
+  const jobsQuery = useJobRequirements(companyId);
 
   // Derived stats from jobs data
   let stats = $derived.by(() => {
@@ -32,6 +47,31 @@
   <title>Dashboard | HR Automation</title>
 </svelte:head>
 
+{#if $companiesQuery.isLoading}
+  <!-- Loading state while fetching company -->
+  <div class="flex items-center justify-center min-h-[60vh]">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-royal-500 border-t-transparent mx-auto mb-4"></div>
+      <p class="text-slate-400">Loading your dashboard...</p>
+    </div>
+  </div>
+{:else if !companyId && !$companiesQuery.isLoading}
+  <!-- No company registered - prompt to create one -->
+  <div class="flex items-center justify-center min-h-[60vh]">
+    <div class="text-center max-w-md">
+      <div class="w-16 h-16 rounded-2xl bg-royal-900/50 flex items-center justify-center mx-auto mb-6">
+        <Briefcase class="w-8 h-8 text-royal-400" />
+      </div>
+      <h2 class="text-2xl font-bold text-slate-100 mb-2">Welcome to HR Automation!</h2>
+      <p class="text-slate-400 mb-6">
+        To get started, please register your company details first.
+      </p>
+      <Button onclick={() => window.location.href = '/company'}>
+        Register Company
+      </Button>
+    </div>
+  </div>
+{:else}
 <div class="space-y-8">
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -111,7 +151,8 @@
           View all
         </a>
       </div>
-      <RecentCandidates companyId={authStore.companyId!} />
+      <RecentCandidates companyId={companyId || ''} />
     </div>
   </div>
 </div>
+{/if}

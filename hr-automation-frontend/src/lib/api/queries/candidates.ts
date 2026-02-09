@@ -12,12 +12,14 @@ export function useCandidates(params?: {
   return createQuery({
     queryKey: ['candidates', params],
     queryFn: async () => {
-      const response = await api.GET('/candidates/', {
+      if (!params?.job_requirement_id) throw new Error('Job requirement ID is required');
+      const response: any = await api.GET('/candidates/', {
         params: { query: params }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to fetch candidates');
       return response.data;
-    }
+    },
+    enabled: !!params?.job_requirement_id
   });
 }
 
@@ -26,11 +28,11 @@ export function useCandidate(candidateId: string | null) {
     queryKey: ['candidate', candidateId],
     queryFn: async () => {
       if (!candidateId) throw new Error('Candidate ID is required');
-      const response = await api.GET('/candidates/{candidate_id}', {
+      const response: any = await api.GET('/candidates/{candidate_id}', {
         params: { path: { candidate_id: candidateId } }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to fetch candidate');
-      return response.data?.data as Candidate;
+      return (response.data?.data || response.data) as Candidate;
     },
     enabled: !!candidateId
   });
@@ -41,7 +43,7 @@ export function useApplicationForm(jobId: string | null) {
     queryKey: ['application-form', jobId],
     queryFn: async () => {
       if (!jobId) throw new Error('Job ID is required');
-      const response = await api.GET('/candidates/apply/{job_requirement_id}', {
+      const response: any = await api.GET('/candidates/apply/{job_requirement_id}', {
         params: { path: { job_requirement_id: jobId } }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to fetch application form');
@@ -74,7 +76,7 @@ export function useSelectTopResumes() {
 
   return createMutation({
     mutationFn: async ({ jobId, topN }: { jobId: string; topN: number }) => {
-      const response = await api.POST('/candidates/select-top-resumes/{job_requirement_id}', {
+      const response: any = await api.POST('/candidates/select-top-resumes/{job_requirement_id}', {
         params: {
           path: { job_requirement_id: jobId },
           query: { top_n: topN }
@@ -99,7 +101,7 @@ export const createUpdateCandidateMutation = () => {
 
   return createMutation({
     mutationFn: async ({ candidateId, data }: { candidateId: string; data: Partial<Candidate> }) => {
-      const response = await api.PUT('/candidates/{candidate_id}', {
+      const response: any = await api.PUT('/candidates/{candidate_id}', {
         params: { path: { candidate_id: candidateId } },
         body: data as any
       });

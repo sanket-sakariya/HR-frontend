@@ -4,6 +4,7 @@
   import { useJobRequirement, useDeleteJobRequirement, useUpdateJobStatus } from '$lib/api/queries/jobs';
   import { useCandidates, useSelectTopResumes } from '$lib/api/queries/candidates';
   import { useCreateAptitudeTest } from '$lib/api/queries/aptitude';
+  import { useStartTechnicalInterview, useTechnicalInterviews } from '$lib/api/queries/interviews';
   import StatusBadge from '$lib/components/shared/StatusBadge.svelte';
   import ScoreGauge from '$lib/components/shared/ScoreGauge.svelte';
   import Button from '$lib/components/ui/Button.svelte';
@@ -25,17 +26,20 @@
     Brain,
     Video,
     UserCheck,
-    Copy
+    Copy,
+    ExternalLink
   } from 'lucide-svelte';
 
   const jobId = $page.params.job_id;
 
   const jobQuery = useJobRequirement(jobId);
   const candidatesQuery = useCandidates({ job_requirement_id: jobId });
+  const technicalInterviewsQuery = useTechnicalInterviews(jobId);
   const deleteJobMutation = useDeleteJobRequirement();
   const updateStatusMutation = useUpdateJobStatus();
   const selectTopResumesMutation = useSelectTopResumes();
   const createAptitudeMutation = useCreateAptitudeTest();
+  const startTechnicalMutation = useStartTechnicalInterview();
 
   let showDeleteConfirm = $state(false);
   let topN = $state(5);
@@ -78,6 +82,27 @@
     }
   }
 
+  async function handleStartTechnicalInterview(candidate: any) {
+    try {
+      const result = await $startTechnicalMutation.mutateAsync({
+        candidateId: candidate.candidate_id,
+        jobRequirementId: jobId
+      });
+      
+      toast.success('Technical interview started!');
+      
+      // If the API returns an interview URL, open it
+      if (result?.data?.interview_url) {
+        window.open(result.data.interview_url, '_blank');
+      }
+      
+      // Refresh the interviews list
+      $technicalInterviewsQuery.refetch();
+    } catch (error: any) {
+      toast.error('Failed to start interview', { description: error.message });
+    }
+  }
+
   function copyApplyLink() {
     const link = `${window.location.origin}/apply/${jobId}`;
     navigator.clipboard.writeText(link);
@@ -91,39 +116,105 @@
     { id: 'hr', label: 'HR', icon: UserCheck }
   ];
 
-  // Helper function to derive candidate status from test results
-  function getCandidateStatus(candidate: any): string {
-    // If HR interview passed -> hire_recommended
-    if (candidate.hr_interview_result === 'pass') return 'hire_recommended';
-    // If technical passed but waiting for HR -> hr_eligible
-    if (candidate.technical_test_result === 'pass') return 'hr_eligible';
-    // If aptitude passed but waiting for technical -> technical_eligible
-    if (candidate.aptitude_test_result === 'pass') return 'technical_eligible';
-    // If has resume score (screened) but no aptitude yet -> aptitude_eligible
-    if (candidate.candidate_resume_score != null && candidate.candidate_resume_score > 0) return 'aptitude_eligible';
-    // Default: just applied
-    return 'applied';
+  // Pipeline stage definitions
+  const pipelineStages = [
+    { id: 'applied', label: 'Applied' },
+    { id: 'aptitude_eligible', label: 'Aptitude Eligible' },
+    { id: 'technical_eligible', label: 'Technical Eligible' },
+    { id: 'hr_eligible', label: 'HR Eligible' },
+    { id: 'hire_recommended', label: 'Hire Recommended' }
+  ];
+
+  // Determine how far a candidate has progressed and whether they failed at a stage
+  function getCandidateStageInfo(candidate: any): { reachedStage: number; failedAtStage: number | null } {
+    let reachedStage = 0; // 0=Applied, 1=Aptitude, 2=Technical, 3=HR, 4=Hired
+    let failedAtStage: number | null = null;
+    const status = candidate.status || '';
+
+    // Stage 1: Reached Aptitude Eligible
+    const reachedAptitude =
+      ['aptitude_eligible', 'aptitude_passed', 'aptitude_failed',
+       'technical_eligible', 'technical_passed', 'technical_failed',
+       'hr_eligible', 'hr_passed', 'hr_failed', 'hire_recommended'].includes(status) ||
+      (candidate.candidate_resume_score != null && candidate.candidate_resume_score > 0);
+
+    if (!reachedAptitude) return { reachedStage, failedAtStage };
+    reachedStage = 1;
+
+    // Check aptitude outcome
+    const aptitudeFailed = candidate.aptitude_test_result === 'fail' || status === 'aptitude_failed';
+    const aptitudePassed = candidate.aptitude_test_result === 'pass' ||
+      ['aptitude_passed', 'technical_eligible', 'technical_passed', 'technical_failed',
+       'hr_eligible', 'hr_passed', 'hr_failed', 'hire_recommended'].includes(status);
+    if (aptitudeFailed) return { reachedStage, failedAtStage: 1 };
+    if (!aptitudePassed) return { reachedStage, failedAtStage };
+
+    // Stage 2: Reached Technical Eligible
+    reachedStage = 2;
+    const technicalFailed = candidate.technical_test_result === 'fail' || status === 'technical_failed';
+    const technicalPassed = candidate.technical_test_result === 'pass' ||
+      ['technical_passed', 'hr_eligible', 'hr_passed', 'hr_failed', 'hire_recommended'].includes(status);
+    if (technicalFailed) return { reachedStage, failedAtStage: 2 };
+    if (!technicalPassed) return { reachedStage, failedAtStage };
+
+    // Stage 3: Reached HR Eligible
+    reachedStage = 3;
+    const hrFailed = candidate.hr_interview_result === 'fail' || status === 'hr_failed';
+    const hrPassed = candidate.hr_interview_result === 'pass' ||
+      ['hr_passed', 'hire_recommended'].includes(status);
+    if (hrFailed) return { reachedStage, failedAtStage: 3 };
+    if (!hrPassed) return { reachedStage, failedAtStage };
+
+    // Stage 4: Hire Recommended
+    reachedStage = 4;
+    return { reachedStage, failedAtStage };
   }
 
-  // Group candidates by derived status
-  let candidatesByStatus = $derived.by(() => {
+  // Build cumulative pipeline: each candidate appears in all stages up to their reached stage
+  let candidatesPipeline = $derived.by(() => {
     const candidates = $candidatesQuery.data?.data?.data || [];
-    const grouped = {
-      applied: [] as any[],
-      aptitude_eligible: [] as any[],
-      technical_eligible: [] as any[],
-      hr_eligible: [] as any[],
-      hire_recommended: [] as any[]
-    };
-    
+
+    const stages = pipelineStages.map(s => ({
+      ...s,
+      candidates: [] as { candidate: any; stageStatus: 'passed' | 'failed' | 'current' }[],
+      passedCount: 0,
+      failedCount: 0,
+      currentCount: 0
+    }));
+
     candidates.forEach((c: any) => {
-      const status = getCandidateStatus(c);
-      if (grouped[status as keyof typeof grouped]) {
-        grouped[status as keyof typeof grouped].push(c);
+      const { reachedStage, failedAtStage } = getCandidateStageInfo(c);
+
+      for (let i = 0; i <= reachedStage; i++) {
+        let stageStatus: 'passed' | 'failed' | 'current';
+        if (i < reachedStage) {
+          stageStatus = 'passed';
+        } else if (failedAtStage === i) {
+          stageStatus = 'failed';
+        } else {
+          stageStatus = 'current';
+        }
+        stages[i].candidates.push({ candidate: c, stageStatus });
       }
     });
-    
-    return grouped;
+
+    // Compute summary counts
+    stages.forEach(stage => {
+      stage.passedCount = stage.candidates.filter(c => c.stageStatus === 'passed').length;
+      stage.failedCount = stage.candidates.filter(c => c.stageStatus === 'failed').length;
+      stage.currentCount = stage.candidates.filter(c => c.stageStatus === 'current').length;
+    });
+
+    return stages;
+  });
+
+  // For the technical tab - candidates currently eligible for technical interview
+  let technicalEligibleCandidates = $derived.by(() => {
+    const candidates = $candidatesQuery.data?.data?.data || [];
+    return candidates.filter((c: any) => {
+      const { reachedStage, failedAtStage } = getCandidateStageInfo(c);
+      return reachedStage === 2 && failedAtStage === null;
+    });
   });
 </script>
 
@@ -324,40 +415,59 @@
             </div>
           {:else}
             <div class="space-y-6">
-              <!-- Pipeline stages -->
-              <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                {#each Object.entries(candidatesByStatus) as [status, candidates]}
-                  <div class="p-4 rounded-lg bg-obsidian-800/50 border border-slate-700">
-                    <div class="flex items-center justify-between mb-3">
-                      <h5 class="text-sm font-medium text-slate-300">{formatStatus(status)}</h5>
-                      <span class="text-xs text-slate-500">{candidates.length}</span>
+              <!-- Pipeline stages - cumulative view -->
+              <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                {#each candidatesPipeline as stage}
+                  <div class="rounded-lg bg-obsidian-800/50 border border-slate-700 overflow-hidden">
+                    <!-- Stage header -->
+                    <div class="px-4 py-3 border-b border-slate-700/50">
+                      <div class="flex items-center justify-between">
+                        <h5 class="text-sm font-semibold text-slate-200">{stage.label}</h5>
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300">{stage.candidates.length}</span>
+                      </div>
+                      {#if stage.candidates.length > 0}
+                        <div class="flex gap-3 mt-2 text-xs">
+                          {#if stage.passedCount > 0}
+                            <span class="flex items-center gap-1 text-emerald-400">
+                              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                              {stage.passedCount} passed
+                            </span>
+                          {/if}
+                          {#if stage.failedCount > 0}
+                            <span class="flex items-center gap-1 text-red-400">
+                              <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                              {stage.failedCount} failed
+                            </span>
+                          {/if}
+                          {#if stage.currentCount > 0}
+                            <span class="flex items-center gap-1 text-royal-400">
+                              <span class="w-1.5 h-1.5 rounded-full bg-royal-400"></span>
+                              {stage.currentCount} active
+                            </span>
+                          {/if}
+                        </div>
+                      {/if}
                     </div>
-                    <div class="space-y-2 max-h-64 overflow-y-auto">
-                      {#each candidates.slice(0, 5) as candidate (candidate.candidate_id)}
+                    <!-- Candidate list -->
+                    <div class="p-3 space-y-1.5 max-h-72 overflow-y-auto">
+                      {#each stage.candidates as { candidate, stageStatus } (candidate.candidate_id)}
                         <a
                           href="/candidates/{candidate.candidate_id}"
-                          class="block p-2 rounded bg-obsidian-900/50 hover:bg-obsidian-900 transition-colors"
+                          class="flex items-center gap-2.5 p-2 rounded-md transition-colors hover:bg-obsidian-900/80 {stageStatus === 'passed' ? 'bg-emerald-500/5' : stageStatus === 'failed' ? 'bg-red-500/5' : 'bg-royal-500/5'}"
                         >
-                          <p class="text-sm text-slate-200 truncate">
-                            {candidate.first_name} {candidate.last_name}
-                          </p>
-                          {#if candidate.candidate_resume_score}
-                            <div class="flex items-center gap-2 mt-1">
-                              <div class="flex-1 h-1 bg-slate-700 rounded-full overflow-hidden">
-                                <div 
-                                  class="h-full bg-royal-500 rounded-full"
-                                  style="width: {candidate.candidate_resume_score}%"
-                                ></div>
-                              </div>
-                              <span class="text-xs text-slate-500">{candidate.candidate_resume_score.toFixed(1)}%</span>
-                            </div>
-                          {/if}
+                          <span class="flex-shrink-0 w-2 h-2 rounded-full {stageStatus === 'passed' ? 'bg-emerald-400' : stageStatus === 'failed' ? 'bg-red-400' : 'bg-royal-400'}"></span>
+                          <div class="min-w-0 flex-1">
+                            <p class="text-sm text-slate-200 truncate">
+                              {candidate.first_name} {candidate.last_name}
+                            </p>
+                          </div>
+                          <span class="flex-shrink-0 text-[10px] font-medium uppercase tracking-wide {stageStatus === 'passed' ? 'text-emerald-400' : stageStatus === 'failed' ? 'text-red-400' : 'text-royal-400'}">
+                            {stageStatus === 'passed' ? '✓ Passed' : stageStatus === 'failed' ? '✗ Failed' : '● Active'}
+                          </span>
                         </a>
                       {/each}
-                      {#if candidates.length > 5}
-                        <p class="text-xs text-slate-500 text-center">
-                          +{candidates.length - 5} more
-                        </p>
+                      {#if stage.candidates.length === 0}
+                        <p class="text-xs text-slate-500 text-center py-4">No candidates yet</p>
                       {/if}
                     </div>
                   </div>
@@ -375,13 +485,90 @@
             </Button>
           </div>
         {:else if activeTab === 'technical'}
-          <div class="text-center py-12">
-            <Video class="w-12 h-12 text-slate-600 mx-auto mb-4" />
-            <h4 class="text-lg font-medium text-slate-300 mb-2">Technical Interviews</h4>
-            <p class="text-slate-500 mb-4">View AI-powered technical interview results</p>
-            <Button onclick={() => goto(`/jobs/${jobId}/technical`)}>
-              View Technical Interviews
-            </Button>
+          <div class="space-y-6">
+            <!-- Candidates eligible for technical interview -->
+            <div>
+              <h4 class="text-lg font-medium text-slate-200 mb-4">Candidates Eligible for Technical Interview</h4>
+              <p class="text-sm text-slate-400 mb-4">These candidates have passed the aptitude test and are ready for technical interview.</p>
+              
+              {#if technicalEligibleCandidates.length === 0}
+                <div class="text-center py-8 bg-obsidian-800/30 rounded-lg">
+                  <Video class="w-10 h-10 text-slate-600 mx-auto mb-3" />
+                  <p class="text-slate-400">No candidates eligible for technical interview yet</p>
+                  <p class="text-sm text-slate-500 mt-1">Candidates will appear here after passing the aptitude test</p>
+                </div>
+              {:else}
+                <div class="grid gap-4">
+                  {#each technicalEligibleCandidates as candidate (candidate.candidate_id)}
+                    <div class="p-4 rounded-lg bg-obsidian-800/50 border border-slate-700">
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <p class="font-medium text-slate-200">{candidate.first_name} {candidate.last_name}</p>
+                          <p class="text-sm text-slate-400">{candidate.email}</p>
+                          {#if candidate.aptitude_test_result}
+                            <p class="text-xs text-emerald-400 mt-1">Aptitude: Passed</p>
+                          {/if}
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <Button 
+                            variant="success" 
+                            size="sm"
+                            onclick={() => handleStartTechnicalInterview(candidate)}
+                            loading={$startTechnicalMutation.isPending}
+                          >
+                            <Video class="w-4 h-4 mr-2" />
+                            Start Interview
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+
+            <!-- Existing technical interviews -->
+            <div class="pt-6 border-t border-slate-700">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="text-lg font-medium text-slate-200">Technical Interview Results</h4>
+                <Button variant="ghost" size="sm" onclick={() => goto(`/jobs/${jobId}/technical`)}>
+                  View All
+                  <ExternalLink class="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+              
+              {#if $technicalInterviewsQuery.isLoading}
+                <Skeleton class="h-32" />
+              {:else if ($technicalInterviewsQuery.data || []).length === 0}
+                <div class="text-center py-8 bg-obsidian-800/30 rounded-lg">
+                  <CheckCircle class="w-10 h-10 text-slate-600 mx-auto mb-3" />
+                  <p class="text-slate-400">No technical interviews completed yet</p>
+                </div>
+              {:else}
+                <div class="space-y-3">
+                  {#each ($technicalInterviewsQuery.data || []).slice(0, 5) as interview}
+                    <div class="p-4 rounded-lg bg-obsidian-800/50 border border-slate-700 flex items-center justify-between">
+                      <div>
+                        <p class="font-medium text-slate-200">{interview.candidate_name || 'Candidate'}</p>
+                        <div class="flex items-center gap-3 mt-1">
+                          <StatusBadge status={interview.interview_status || 'pending'} />
+                          {#if interview.overall_score}
+                            <span class="text-sm {interview.overall_score >= 70 ? 'text-emerald-400' : interview.overall_score >= 50 ? 'text-amber-400' : 'text-red-400'}">
+                              Score: {interview.overall_score}%
+                            </span>
+                          {/if}
+                        </div>
+                      </div>
+                      {#if interview.interview_url}
+                        <Button variant="ghost" size="sm" onclick={() => window.open(interview.interview_url, '_blank')}>
+                          <ExternalLink class="w-4 h-4" />
+                        </Button>
+                      {/if}
+                    </div>
+                  {/each}
+                </div>
+              {/if}
+            </div>
           </div>
         {:else if activeTab === 'hr'}
           <div class="text-center py-12">

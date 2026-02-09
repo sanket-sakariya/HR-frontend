@@ -58,6 +58,13 @@
 
   const displayInterviews = $derived(interviews.length > 0 ? interviews : mockInterviews);
 
+  const avgScore = $derived(() => {
+    const completedWithScore = displayInterviews.filter(i => i.status === 'completed' && i.score);
+    return completedWithScore.length > 0 
+      ? Math.round(completedWithScore.reduce((acc, i) => acc + (i.score || 0), 0) / completedWithScore.length)
+      : 0;
+  });
+
   const statusConfig: Record<string, { label: string; variant: 'default' | 'success' | 'warning' | 'error' | 'info' }> = {
     scheduled: { label: 'Scheduled', variant: 'info' },
     in_progress: { label: 'In Progress', variant: 'warning' },
@@ -135,11 +142,7 @@
           <Users class="w-5 h-5 text-royal-400" />
         </div>
         <div>
-          {@const completedWithScore = displayInterviews.filter(i => i.status === 'completed' && i.score)}
-          {@const avgScore = completedWithScore.length > 0 
-            ? Math.round(completedWithScore.reduce((acc, i) => acc + (i.score || 0), 0) / completedWithScore.length)
-            : 0}
-          <p class="text-2xl font-bold text-obsidian-100">{avgScore}%</p>
+          <p class="text-2xl font-bold text-obsidian-100">{avgScore()}%</p>
           <p class="text-xs text-obsidian-400">Avg Score</p>
         </div>
       </div>

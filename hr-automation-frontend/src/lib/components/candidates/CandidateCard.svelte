@@ -22,12 +22,17 @@
 
   const statusConfig: Record<string, { label: string; variant: 'default' | 'success' | 'warning' | 'error' | 'info' }> = {
     applied: { label: 'Applied', variant: 'default' },
-    screening: { label: 'Screening', variant: 'info' },
-    aptitude: { label: 'Aptitude', variant: 'info' },
-    technical: { label: 'Technical', variant: 'warning' },
-    hr: { label: 'HR Round', variant: 'warning' },
-    offered: { label: 'Offered', variant: 'success' },
-    hired: { label: 'Hired', variant: 'success' },
+    resume_screened: { label: 'Resume Screened', variant: 'info' },
+    aptitude_eligible: { label: 'Aptitude Eligible', variant: 'info' },
+    aptitude_passed: { label: 'Aptitude Passed', variant: 'success' },
+    aptitude_failed: { label: 'Aptitude Failed', variant: 'error' },
+    technical_eligible: { label: 'Technical Eligible', variant: 'warning' },
+    technical_passed: { label: 'Technical Passed', variant: 'success' },
+    technical_failed: { label: 'Technical Failed', variant: 'error' },
+    hr_eligible: { label: 'HR Eligible', variant: 'warning' },
+    hr_passed: { label: 'HR Passed', variant: 'success' },
+    hr_failed: { label: 'HR Failed', variant: 'error' },
+    hire_recommended: { label: 'Hire Recommended', variant: 'success' },
     rejected: { label: 'Rejected', variant: 'error' }
   };
 
@@ -42,7 +47,7 @@
     <!-- Avatar -->
     <div class="w-12 h-12 rounded-full bg-gradient-to-br from-royal-500 to-royal-700 flex items-center justify-center flex-shrink-0">
       <span class="text-lg font-semibold text-white">
-        {candidate.name?.charAt(0).toUpperCase() || 'C'}
+        {(candidate.first_name || 'C').charAt(0).toUpperCase()}
       </span>
     </div>
 
@@ -50,11 +55,11 @@
     <div class="flex-1 min-w-0">
       <div class="flex items-start justify-between gap-2">
         <div>
-          <h3 class="font-semibold text-obsidian-100 truncate">{candidate.name || 'Unknown'}</h3>
-          {#if candidate.current_position}
+          <h3 class="font-semibold text-obsidian-100 truncate">{[candidate.first_name, candidate.last_name].filter(Boolean).join(' ') || 'Unknown'}</h3>
+          {#if candidate.email}
             <p class="text-sm text-obsidian-400 flex items-center gap-1 mt-0.5">
-              <Briefcase class="w-3 h-3" />
-              {candidate.current_position}
+              <Mail class="w-3 h-3" />
+              {candidate.email}
             </p>
           {/if}
         </div>
@@ -74,38 +79,16 @@
             {candidate.phone}
           </span>
         {/if}
-        {#if candidate.location}
-          <span class="flex items-center gap-1">
-            <MapPin class="w-3 h-3" />
-            {candidate.location}
-          </span>
-        {/if}
       </div>
-
-      <!-- Skills -->
-      {#if candidate.skills && candidate.skills.length > 0}
-        <div class="mt-3 flex flex-wrap gap-1">
-          {#each candidate.skills.slice(0, 5) as skill}
-            <span class="px-2 py-0.5 text-xs bg-obsidian-700 text-obsidian-300 rounded">
-              {skill}
-            </span>
-          {/each}
-          {#if candidate.skills.length > 5}
-            <span class="px-2 py-0.5 text-xs bg-obsidian-700 text-obsidian-400 rounded">
-              +{candidate.skills.length - 5}
-            </span>
-          {/if}
-        </div>
-      {/if}
 
       <!-- Score & Actions -->
       <div class="mt-4 flex items-center justify-between">
         <div class="flex items-center gap-4 text-sm">
-          {#if candidate.ai_score !== undefined}
+          {#if (candidate as any).candidate_resume_score !== undefined}
             <div class="flex items-center gap-1">
               <Star class="w-4 h-4 text-amber-500" />
-              <span class="text-obsidian-200 font-medium">{candidate.ai_score}%</span>
-              <span class="text-obsidian-500">AI Score</span>
+              <span class="text-obsidian-200 font-medium">{(candidate as any).candidate_resume_score}%</span>
+              <span class="text-obsidian-500">Resume Score</span>
             </div>
           {/if}
           {#if candidate.created_at}

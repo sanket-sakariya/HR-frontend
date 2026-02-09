@@ -40,16 +40,27 @@
 
   const statusConfig: Record<string, { label: string; variant: 'default' | 'success' | 'warning' | 'error' | 'info' }> = {
     applied: { label: 'Applied', variant: 'default' },
-    screening: { label: 'Screening', variant: 'info' },
-    aptitude: { label: 'Aptitude', variant: 'info' },
-    technical: { label: 'Technical', variant: 'warning' },
-    hr: { label: 'HR Round', variant: 'warning' },
-    offered: { label: 'Offered', variant: 'success' },
-    hired: { label: 'Hired', variant: 'success' },
+    resume_screened: { label: 'Resume Screened', variant: 'info' },
+    aptitude_eligible: { label: 'Aptitude Eligible', variant: 'info' },
+    aptitude_passed: { label: 'Aptitude Passed', variant: 'success' },
+    aptitude_failed: { label: 'Aptitude Failed', variant: 'error' },
+    technical_eligible: { label: 'Technical Eligible', variant: 'warning' },
+    technical_passed: { label: 'Technical Passed', variant: 'success' },
+    technical_failed: { label: 'Technical Failed', variant: 'error' },
+    hr_eligible: { label: 'HR Eligible', variant: 'warning' },
+    hr_passed: { label: 'HR Passed', variant: 'success' },
+    hr_failed: { label: 'HR Failed', variant: 'error' },
+    hire_recommended: { label: 'Hire Recommended', variant: 'success' },
     rejected: { label: 'Rejected', variant: 'error' }
   };
 
   const candidate = $derived($candidateQuery.data);
+  
+  // Compute full name from first_name and last_name
+  const candidateName = $derived(
+    candidate ? [candidate.first_name, candidate.last_name].filter(Boolean).join(' ') || 'Unknown' : 'Unknown'
+  );
+  
   const currentStatus = $derived(
     candidate ? statusConfig[candidate.status || 'applied'] || statusConfig.applied : statusConfig.applied
   );
@@ -110,7 +121,7 @@
 </script>
 
 <svelte:head>
-  <title>{candidate?.name || 'Candidate'} | HR Automation</title>
+  <title>{candidateName} | HR Automation</title>
 </svelte:head>
 
 <div class="space-y-6">
@@ -147,20 +158,20 @@
       <div class="flex items-start gap-4">
         <div class="w-20 h-20 rounded-full bg-gradient-to-br from-royal-500 to-royal-700 flex items-center justify-center flex-shrink-0">
           <span class="text-3xl font-bold text-white">
-            {candidate.name?.charAt(0).toUpperCase() || 'C'}
+            {(candidate.first_name || 'C').charAt(0).toUpperCase()}
           </span>
         </div>
 
         <div>
           <div class="flex items-center gap-3 mb-2">
-            <h1 class="text-2xl font-bold text-obsidian-100">{candidate.name || 'Unknown'}</h1>
+            <h1 class="text-2xl font-bold text-obsidian-100">{candidateName}</h1>
             <StatusBadge status={currentStatus.label} variant={currentStatus.variant} />
           </div>
 
-          {#if candidate.current_position}
+          {#if candidate.job_requirement_id}
             <p class="text-obsidian-300 flex items-center gap-2">
               <Briefcase class="w-4 h-4" />
-              {candidate.current_position}
+              Job: {candidate.job_requirement_id}
             </p>
           {/if}
 
@@ -177,11 +188,11 @@
                 {candidate.phone}
               </a>
             {/if}
-            {#if candidate.location}
-              <span class="flex items-center gap-1">
-                <MapPin class="w-4 h-4" />
-                {candidate.location}
-              </span>
+            {#if (candidate as any).linkedin_url}
+              <a href={(candidate as any).linkedin_url} target="_blank" class="flex items-center gap-1 hover:text-royal-400">
+                <ExternalLink class="w-4 h-4" />
+                LinkedIn
+              </a>
             {/if}
           </div>
         </div>
@@ -239,18 +250,18 @@
             <h2 class="text-lg font-semibold text-obsidian-100 mb-4">Assessment Scores</h2>
             <div class="grid sm:grid-cols-3 gap-6">
               <div class="text-center">
-                <ScoreGauge score={candidate.ai_score || 0} label="AI Match" />
+                <ScoreGauge score={(candidate as any).candidate_resume_score || candidate.resume_score || 0} label="Resume Score" />
               </div>
               <div class="text-center">
                 <ScoreGauge 
-                  score={interviewHistory.find(i => i.type === 'aptitude')?.score || 0} 
+                  score={(candidate as any).aptitude_test_result === 'pass' ? 80 : 0} 
                   label="Aptitude"
                   color="amber"
                 />
               </div>
               <div class="text-center">
                 <ScoreGauge 
-                  score={interviewHistory.find(i => i.type === 'technical')?.score || 0} 
+                  score={(candidate as any).technical_test_result === 'pass' ? 80 : 0} 
                   label="Technical"
                   color="purple"
                 />
@@ -258,19 +269,33 @@
             </div>
           </Card>
 
-          <!-- Skills -->
-          {#if candidate.skills && candidate.skills.length > 0}
-            <Card class="p-6">
-              <h2 class="text-lg font-semibold text-obsidian-100 mb-4">Skills</h2>
-              <div class="flex flex-wrap gap-2">
-                {#each candidate.skills as skill}
-                  <span class="px-3 py-1 bg-obsidian-700 text-obsidian-200 rounded-full text-sm">
-                    {skill}
-                  </span>
-                {/each}
+          <!-- Test Results -->
+          <Card class="p-6">
+            <h2 class="text-lg font-semibold text-obsidian-100 mb-4">Test Results</h2>
+            <div class="grid sm:grid-cols-3 gap-4">
+              <div class="bg-obsidian-800/50 rounded-lg p-4 text-center">
+                <Brain class="w-6 h-6 mx-auto mb-2 text-royal-400" />
+                <p class="text-sm text-obsidian-400">Aptitude</p>
+                <p class="font-semibold text-obsidian-100 mt-1">
+                  {(candidate as any).aptitude_test_result || 'Pending'}
+                </p>
               </div>
-            </Card>
-          {/if}
+              <div class="bg-obsidian-800/50 rounded-lg p-4 text-center">
+                <Code class="w-6 h-6 mx-auto mb-2 text-amber-400" />
+                <p class="text-sm text-obsidian-400">Technical</p>
+                <p class="font-semibold text-obsidian-100 mt-1">
+                  {(candidate as any).technical_test_result || 'Pending'}
+                </p>
+              </div>
+              <div class="bg-obsidian-800/50 rounded-lg p-4 text-center">
+                <Handshake class="w-6 h-6 mx-auto mb-2 text-purple-400" />
+                <p class="text-sm text-obsidian-400">HR</p>
+                <p class="font-semibold text-obsidian-100 mt-1">
+                  {(candidate as any).hr_test_result || 'Pending'}
+                </p>
+              </div>
+            </div>
+          </Card>
 
           <!-- Recent Interviews -->
           <Card class="p-6">
@@ -332,20 +357,24 @@
                 </dd>
               </div>
               <div>
-                <dt class="text-sm text-obsidian-400">Experience</dt>
-                <dd class="text-obsidian-200">{candidate.experience_years || 0} years</dd>
+                <dt class="text-sm text-obsidian-400">Email</dt>
+                <dd class="text-obsidian-200">{candidate.email || '-'}</dd>
               </div>
               <div>
-                <dt class="text-sm text-obsidian-400">Expected Salary</dt>
-                <dd class="text-obsidian-200">{candidate.expected_salary || '-'}</dd>
+                <dt class="text-sm text-obsidian-400">Phone</dt>
+                <dd class="text-obsidian-200">{candidate.phone || '-'}</dd>
               </div>
               <div>
-                <dt class="text-sm text-obsidian-400">Notice Period</dt>
-                <dd class="text-obsidian-200">{candidate.notice_period || '-'}</dd>
+                <dt class="text-sm text-obsidian-400">Resume Score</dt>
+                <dd class="text-obsidian-200">{(candidate as any).candidate_resume_score || candidate.resume_score || '-'}%</dd>
               </div>
               <div>
-                <dt class="text-sm text-obsidian-400">Source</dt>
-                <dd class="text-obsidian-200">{candidate.source || 'Direct Application'}</dd>
+                <dt class="text-sm text-obsidian-400">Resume Selected</dt>
+                <dd class="text-obsidian-200">{(candidate as any).resume_selected ? 'Yes' : 'No'}</dd>
+              </div>
+              <div>
+                <dt class="text-sm text-obsidian-400">Candidate ID</dt>
+                <dd class="text-obsidian-200 text-xs font-mono truncate">{candidate.candidate_id}</dd>
               </div>
             </dl>
           </Card>
@@ -356,15 +385,17 @@
             <div class="space-y-3">
               {#each [
                 { id: 'applied', label: 'Applied', icon: Star },
-                { id: 'screening', label: 'AI Screening', icon: Brain },
-                { id: 'aptitude', label: 'Aptitude Test', icon: FileText },
-                { id: 'technical', label: 'Technical Round', icon: Code },
-                { id: 'hr', label: 'HR Round', icon: Handshake },
-                { id: 'offered', label: 'Offer Made', icon: CheckCircle }
+                { id: 'resume_screened', label: 'Resume Screened', icon: Brain },
+                { id: 'aptitude_eligible', label: 'Aptitude Test', icon: FileText },
+                { id: 'technical_eligible', label: 'Technical Round', icon: Code },
+                { id: 'hr_eligible', label: 'HR Round', icon: Handshake },
+                { id: 'hire_recommended', label: 'Hire Recommended', icon: CheckCircle }
               ] as stage, index}
-                {@const stageIndex = ['applied', 'screening', 'aptitude', 'technical', 'hr', 'offered'].indexOf(candidate.status || 'applied')}
-                {@const isCompleted = index <= stageIndex}
-                {@const isCurrent = index === stageIndex}
+                {@const stageOrder = ['applied', 'resume_screened', 'aptitude_eligible', 'aptitude_passed', 'technical_eligible', 'technical_passed', 'hr_eligible', 'hr_passed', 'hire_recommended']}
+                {@const currentIndex = stageOrder.indexOf(candidate.status || 'applied')}
+                {@const stageIdx = stageOrder.indexOf(stage.id)}
+                {@const isCompleted = stageIdx <= currentIndex}
+                {@const isCurrent = stage.id === candidate.status || (stageIdx <= currentIndex && (index === 5 ? stageIdx === currentIndex : stageOrder.indexOf(stage.id) >= stageOrder.indexOf(candidate.status || 'applied')))}
                 
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 rounded-full flex items-center justify-center {isCompleted ? 'bg-royal-600 text-white' : 'bg-obsidian-700 text-obsidian-500'}">

@@ -1,20 +1,60 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { createCandidatesQuery } from '$lib/api/queries/candidates';
+  import { authStore } from '$lib/stores/auth.svelte';
+  import { useCandidates } from '$lib/api/queries/candidates';
+  import { useJobRequirements } from '$lib/api/queries/jobs';
+  import { useCompanies } from '$lib/api/queries/companies';
   import CandidateTable from '$lib/components/candidates/CandidateTable.svelte';
   import CandidateFilters from '$lib/components/candidates/CandidateFilters.svelte';
   import PipelineView from '$lib/components/candidates/PipelineView.svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Users, LayoutGrid, List, Download } from 'lucide-svelte';
+  import Select from '$lib/components/ui/Select.svelte';
+  import Skeleton from '$lib/components/ui/Skeleton.svelte';
+  import { Users, LayoutGrid, List, Download, Briefcase } from 'lucide-svelte';
 
   let search = $state('');
   let status = $state('');
   let sortBy = $state('newest');
   let viewMode = $state<'table' | 'pipeline'>('table');
+  let selectedJobId = $state<string>('');
 
-  // Get candidates query
-  const candidatesQuery = createCandidatesQuery();
+  // Fetch companies to get companyId if not already in authStore
+  const companiesQuery = useCompanies({ limit: 1 });
+  
+  // Get company ID from stored value OR from companies list
+  const companyId = $derived(
+    authStore.companyId || $companiesQuery.data?.data?.[0]?.company_id || null
+  );
+
+  // Update authStore when we get company from API
+  $effect(() => {
+    if (!authStore.companyId && $companiesQuery.data?.data?.[0]) {
+      authStore.setCompany($companiesQuery.data.data[0]);
+    }
+  });
+
+  // Fetch jobs to allow job selection
+  const jobsQuery = useJobRequirements(companyId);
+  
+  // Auto-select first job if none selected
+  $effect(() => {
+    if (!selectedJobId && $jobsQuery.data?.data?.length > 0) {
+      selectedJobId = $jobsQuery.data.data[0].job_requirement_id;
+    }
+  });
+
+  // Job options for dropdown
+  const jobOptions = $derived([
+    { value: '', label: 'Select a Job' },
+    ...($jobsQuery.data?.data || []).map((job: any) => ({
+      value: job.job_requirement_id,
+      label: job.title
+    }))
+  ]);
+
+  // Get candidates for selected job
+  const candidatesQuery = useCandidates(selectedJobId ? { job_requirement_id: selectedJobId } : undefined);
 
   // Filter and sort candidates
   const filteredCandidates = $derived(() => {
@@ -59,6 +99,8 @@
     return result;
   });
 
+  const allCandidates = $derived(filteredCandidates() || []);
+
   function clearFilters() {
     search = '';
     status = '';
@@ -72,14 +114,13 @@
   function handleExport() {
     // Export candidates to CSV
     const data = filteredCandidates();
-    const headers = ['Name', 'Email', 'Phone', 'Position', 'Status', 'AI Score', 'Applied'];
-    const rows = data.map(c => [
-      c.name || '',
+    const headers = ['Name', 'Email', 'Phone', 'Status', 'Resume Score', 'Applied'];
+    const rows = data.map((c: any) => [
+      `${c.first_name || ''} ${c.last_name || ''}`.trim(),
       c.email || '',
       c.phone || '',
-      c.current_position || '',
       c.status || '',
-      c.ai_score?.toString() || '',
+      c.candidate_resume_score?.toString() || '',
       c.created_at || ''
     ]);
 
@@ -109,6 +150,16 @@
     </div>
 
     <div class="flex items-center gap-3">
+      <!-- Job Selector -->
+      <div class="w-64">
+        <Select 
+          options={jobOptions} 
+          value={selectedJobId} 
+          onchange={(e) => selectedJobId = e.currentTarget.value}
+          disabled={$jobsQuery.isLoading}
+        />
+      </div>
+
       <!-- View Mode Toggle -->
       <div class="flex items-center bg-obsidian-800 rounded-lg p-1 border border-obsidian-700">
         <button
@@ -137,14 +188,14 @@
   <!-- Stats -->
   <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
     {#each [
-      { label: 'Total', count: $candidatesQuery.data?.length || 0, color: 'obsidian' },
-      { label: 'Applied', count: $candidatesQuery.data?.filter(c => c.status === 'applied').length || 0, color: 'obsidian' },
-      { label: 'Screening', count: $candidatesQuery.data?.filter(c => c.status === 'screening').length || 0, color: 'royal' },
-      { label: 'Aptitude', count: $candidatesQuery.data?.filter(c => c.status === 'aptitude').length || 0, color: 'blue' },
-      { label: 'Technical', count: $candidatesQuery.data?.filter(c => c.status === 'technical').length || 0, color: 'amber' },
-      { label: 'HR', count: $candidatesQuery.data?.filter(c => c.status === 'hr').length || 0, color: 'purple' },
-      { label: 'Offered', count: $candidatesQuery.data?.filter(c => c.status === 'offered').length || 0, color: 'emerald' },
-      { label: 'Hired', count: $candidatesQuery.data?.filter(c => c.status === 'hired').length || 0, color: 'green' }
+      { label: 'Total', count: allCandidates.length, color: 'obsidian' },
+      { label: 'Applied', count: allCandidates.filter((c: any) => c.status === 'applied').length, color: 'obsidian' },
+      { label: 'Screening', count: allCandidates.filter((c: any) => c.status === 'resume_screened').length, color: 'royal' },
+      { label: 'Aptitude', count: allCandidates.filter((c: any) => c.status?.includes('aptitude')).length, color: 'blue' },
+      { label: 'Technical', count: allCandidates.filter((c: any) => c.status?.includes('technical')).length, color: 'amber' },
+      { label: 'HR', count: allCandidates.filter((c: any) => c.status?.includes('hr')).length, color: 'purple' },
+      { label: 'Offered', count: allCandidates.filter((c: any) => c.status === 'hire_recommended').length, color: 'emerald' },
+      { label: 'Rejected', count: allCandidates.filter((c: any) => c.status === 'rejected').length, color: 'red' }
     ] as stat}
       <div class="bg-obsidian-800/50 border border-obsidian-700 rounded-lg p-3 text-center">
         <p class="text-2xl font-bold text-obsidian-100">{stat.count}</p>
@@ -165,7 +216,19 @@
   />
 
   <!-- Content -->
-  {#if viewMode === 'table'}
+  {#if !selectedJobId}
+    <!-- No job selected state -->
+    <div class="text-center py-12">
+      <Briefcase class="w-16 h-16 mx-auto text-obsidian-600 mb-4" />
+      <h3 class="text-lg font-medium text-obsidian-200 mb-2">Select a Job</h3>
+      <p class="text-obsidian-400 mb-6">
+        Please select a job from the dropdown above to view candidates
+      </p>
+      {#if $jobsQuery.data?.data?.length === 0}
+        <Button href="/jobs/new">Create Your First Job</Button>
+      {/if}
+    </div>
+  {:else if viewMode === 'table'}
     <div class="bg-obsidian-800/30 border border-obsidian-700 rounded-lg">
       <CandidateTable
         candidates={filteredCandidates()}
@@ -178,20 +241,20 @@
     </div>
   {:else}
     <PipelineView
-      candidates={$candidatesQuery.data || []}
+      candidates={filteredCandidates() || []}
       loading={$candidatesQuery.isLoading}
       on:view={handleViewCandidate}
       on:move={(e) => console.log('Move candidate:', e.detail)}
     />
   {/if}
 
-  <!-- Empty State -->
-  {#if !$candidatesQuery.isLoading && filteredCandidates().length === 0 && !search && !status}
+  <!-- Empty State for when job is selected but no candidates -->
+  {#if selectedJobId && !$candidatesQuery.isLoading && filteredCandidates().length === 0 && !search && !status}
     <div class="text-center py-12">
       <Users class="w-16 h-16 mx-auto text-obsidian-600 mb-4" />
       <h3 class="text-lg font-medium text-obsidian-200 mb-2">No candidates yet</h3>
       <p class="text-obsidian-400 mb-6">
-        Candidates will appear here when they apply for your job openings
+        Candidates will appear here when they apply for this job
       </p>
       <Button href="/jobs">View Job Openings</Button>
     </div>

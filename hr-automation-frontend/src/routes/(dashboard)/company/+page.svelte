@@ -1,6 +1,6 @@
 <script lang="ts">
   import { authStore } from '$lib/stores/auth.svelte';
-  import { createCompanyQuery, createUpdateCompanyMutation, createRegisterCompanyMutation } from '$lib/api/queries/companies';
+  import { useCompany, useCompanies, createUpdateCompanyMutation, createRegisterCompanyMutation } from '$lib/api/queries/companies';
   import Card from '$lib/components/ui/Card.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
@@ -33,7 +33,22 @@
     Upload
   } from 'lucide-svelte';
 
-  const companyQuery = createCompanyQuery(authStore.companyId || '');
+  // Fetch companies list to get companyId if not already in authStore
+  const companiesQuery = useCompanies({ limit: 1 });
+  
+  // Get company ID from stored value OR from companies list
+  const companyId = $derived(
+    authStore.companyId || $companiesQuery.data?.data?.[0]?.company_id || null
+  );
+
+  // Update authStore when we get company from API
+  $effect(() => {
+    if (!authStore.companyId && $companiesQuery.data?.data?.[0]) {
+      authStore.setCompany($companiesQuery.data.data[0]);
+    }
+  });
+
+  const companyQuery = useCompany(companyId);
   const updateMutation = createUpdateCompanyMutation();
   const registerMutation = createRegisterCompanyMutation();
 
@@ -111,10 +126,10 @@
     }
 
     try {
-      if (hasCompany && authStore.companyId) {
+      if (hasCompany && companyId) {
         // Update existing company
         await $updateMutation.mutateAsync({
-          companyId: authStore.companyId,
+          companyId: companyId,
           payload: {
             company_name: formData.company_name,
             industry: formData.industry,

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { authStore } from '$lib/stores/auth.svelte';
   import { useJobRequirements } from '$lib/api/queries/jobs';
+  import { useCompanies } from '$lib/api/queries/companies';
   import JobCard from '$lib/components/jobs/JobCard.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
@@ -11,7 +12,22 @@
   let searchQuery = $state('');
   let statusFilter = $state('');
 
-  const jobsQuery = useJobRequirements(authStore.companyId, {
+  // Fetch companies to get companyId if not already in authStore
+  const companiesQuery = useCompanies({ limit: 1 });
+  
+  // Get company ID from stored value OR from companies list
+  const companyId = $derived(
+    authStore.companyId || $companiesQuery.data?.data?.[0]?.company_id || null
+  );
+
+  // Update authStore when we get company from API
+  $effect(() => {
+    if (!authStore.companyId && $companiesQuery.data?.data?.[0]) {
+      authStore.setCompany($companiesQuery.data.data[0]);
+    }
+  });
+
+  const jobsQuery = useJobRequirements(companyId, {
     status: statusFilter || undefined
   });
 

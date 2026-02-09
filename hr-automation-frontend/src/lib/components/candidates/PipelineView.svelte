@@ -27,18 +27,23 @@
 
   const stages: PipelineStage[] = [
     { id: 'applied', label: 'Applied', icon: Users, color: 'obsidian' },
-    { id: 'screening', label: 'Screening', icon: FileSearch, color: 'royal' },
-    { id: 'aptitude', label: 'Aptitude', icon: Brain, color: 'blue' },
-    { id: 'technical', label: 'Technical', icon: Code, color: 'amber' },
-    { id: 'hr', label: 'HR Round', icon: Handshake, color: 'purple' },
-    { id: 'offered', label: 'Offered', icon: Gift, color: 'emerald' },
-    { id: 'hired', label: 'Hired', icon: CheckCircle, color: 'green' },
+    { id: 'resume_screened', label: 'Resume Screened', icon: FileSearch, color: 'royal' },
+    { id: 'aptitude_eligible', label: 'Aptitude', icon: Brain, color: 'blue' },
+    { id: 'technical_eligible', label: 'Technical', icon: Code, color: 'amber' },
+    { id: 'hr_eligible', label: 'HR Round', icon: Handshake, color: 'purple' },
+    { id: 'hire_recommended', label: 'Hire Recommended', icon: Gift, color: 'emerald' },
     { id: 'rejected', label: 'Rejected', icon: XCircle, color: 'red' }
   ];
 
   const candidatesByStage = $derived(
     stages.reduce((acc, stage) => {
-      acc[stage.id] = candidates.filter(c => c.status === stage.id);
+      // Group related statuses together (e.g. aptitude_eligible + aptitude_passed under aptitude)
+      acc[stage.id] = candidates.filter(c => {
+        if (stage.id === 'aptitude_eligible') return c.status?.includes('aptitude');
+        if (stage.id === 'technical_eligible') return c.status?.includes('technical');
+        if (stage.id === 'hr_eligible') return c.status?.includes('hr');
+        return c.status === stage.id;
+      });
       return acc;
     }, {} as Record<string, Candidate[]>)
   );

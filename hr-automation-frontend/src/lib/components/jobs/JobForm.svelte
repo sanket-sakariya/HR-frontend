@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { useCreateJobRequirement, useUpdateJobRequirement } from '$lib/api/queries/jobs';
+  import { useCompanies } from '$lib/api/queries/companies';
   import { authStore } from '$lib/stores/auth.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
@@ -18,6 +19,21 @@
   }
 
   let { job, mode = 'create' }: Props = $props();
+
+  // Fetch companies to get companyId if not already in authStore
+  const companiesQuery = useCompanies({ limit: 1 });
+  
+  // Get company ID from stored value OR from companies list
+  const companyId = $derived(
+    authStore.companyId || $companiesQuery.data?.data?.[0]?.company_id || null
+  );
+
+  // Update authStore when we get company from API
+  $effect(() => {
+    if (!authStore.companyId && $companiesQuery.data?.data?.[0]) {
+      authStore.setCompany($companiesQuery.data.data[0]);
+    }
+  });
 
   let formData = $state({
     title: job?.title || '',
@@ -74,8 +90,15 @@
         });
         toast.success('Job updated successfully');
       } else {
+        if (!companyId) {
+          toast.error('Company not found', {
+            description: 'Please register your company first'
+          });
+          goto('/company');
+          return;
+        }
         await $createMutation.mutateAsync({
-          companyId: authStore.companyId!,
+          companyId: companyId,
           payload
         });
         toast.success('Job created successfully');

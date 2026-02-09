@@ -7,15 +7,23 @@
 
   interface Props {
     companyId: string;
+    jobId?: string;
   }
 
-  let { companyId }: Props = $props();
+  let { companyId, jobId }: Props = $props();
 
-  const candidatesQuery = useCandidates({ limit: 5 });
+  const candidatesQuery = useCandidates(jobId ? { job_requirement_id: jobId, limit: 5 } : undefined);
 </script>
 
 <div class="space-y-3">
-  {#if $candidatesQuery.isLoading}
+  {#if !jobId}
+    <div class="text-center py-8">
+      <p class="text-slate-400">Select a job to view candidates</p>
+      <p class="text-sm text-slate-500 mt-1">
+        Candidates are displayed per job requirement
+      </p>
+    </div>
+  {:else if $candidatesQuery.isLoading}
     {#each Array(3) as _}
       <div class="flex items-center gap-4 p-4 rounded-lg bg-obsidian-800/50">
         <Skeleton class="w-10 h-10 rounded-full" />

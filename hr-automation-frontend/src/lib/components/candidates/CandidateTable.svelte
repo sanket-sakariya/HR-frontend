@@ -26,12 +26,17 @@
 
   const statusConfig: Record<string, { label: string; variant: 'default' | 'success' | 'warning' | 'error' | 'info' }> = {
     applied: { label: 'Applied', variant: 'default' },
-    screening: { label: 'Screening', variant: 'info' },
-    aptitude: { label: 'Aptitude', variant: 'info' },
-    technical: { label: 'Technical', variant: 'warning' },
-    hr: { label: 'HR Round', variant: 'warning' },
-    offered: { label: 'Offered', variant: 'success' },
-    hired: { label: 'Hired', variant: 'success' },
+    resume_screened: { label: 'Resume Screened', variant: 'info' },
+    aptitude_eligible: { label: 'Aptitude Eligible', variant: 'info' },
+    aptitude_passed: { label: 'Aptitude Passed', variant: 'success' },
+    aptitude_failed: { label: 'Aptitude Failed', variant: 'error' },
+    technical_eligible: { label: 'Technical Eligible', variant: 'warning' },
+    technical_passed: { label: 'Technical Passed', variant: 'success' },
+    technical_failed: { label: 'Technical Failed', variant: 'error' },
+    hr_eligible: { label: 'HR Eligible', variant: 'warning' },
+    hr_passed: { label: 'HR Passed', variant: 'success' },
+    hr_failed: { label: 'HR Failed', variant: 'error' },
+    hire_recommended: { label: 'Hire Recommended', variant: 'success' },
     rejected: { label: 'Rejected', variant: 'error' }
   };
 
@@ -56,13 +61,13 @@
           Candidate
         </th>
         <th class="text-left py-3 px-4 text-xs font-medium text-obsidian-400 uppercase tracking-wider">
-          Position
+          Email
         </th>
         <th class="text-left py-3 px-4 text-xs font-medium text-obsidian-400 uppercase tracking-wider">
           Status
         </th>
         <th class="text-left py-3 px-4 text-xs font-medium text-obsidian-400 uppercase tracking-wider">
-          AI Score
+          Resume Score
         </th>
         <th class="text-left py-3 px-4 text-xs font-medium text-obsidian-400 uppercase tracking-wider">
           Applied
@@ -116,31 +121,31 @@
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-royal-500 to-royal-700 flex items-center justify-center flex-shrink-0">
                   <span class="text-sm font-semibold text-white">
-                    {candidate.name?.charAt(0).toUpperCase() || 'C'}
+                    {(candidate.first_name || 'C').charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div>
-                  <p class="font-medium text-obsidian-100">{candidate.name || 'Unknown'}</p>
+                  <p class="font-medium text-obsidian-100">{[candidate.first_name, candidate.last_name].filter(Boolean).join(' ') || 'Unknown'}</p>
                   <p class="text-sm text-obsidian-400">{candidate.email || ''}</p>
                 </div>
               </div>
             </td>
             <td class="py-4 px-4">
-              <p class="text-obsidian-200">{candidate.current_position || '-'}</p>
+              <p class="text-obsidian-200">{candidate.email || '-'}</p>
             </td>
             <td class="py-4 px-4">
               <StatusBadge status={status.label} variant={status.variant} />
             </td>
             <td class="py-4 px-4">
-              {#if candidate.ai_score !== undefined}
+              {#if (candidate as any).candidate_resume_score !== undefined}
                 <div class="flex items-center gap-2">
                   <div class="w-16 h-2 bg-obsidian-700 rounded-full overflow-hidden">
                     <div 
                       class="h-full bg-gradient-to-r from-royal-500 to-emerald-500 rounded-full"
-                      style="width: {candidate.ai_score}%"
+                      style="width: {(candidate as any).candidate_resume_score}%"
                     ></div>
                   </div>
-                  <span class="text-sm text-obsidian-200">{candidate.ai_score}%</span>
+                  <span class="text-sm text-obsidian-200">{(candidate as any).candidate_resume_score}%</span>
                 </div>
               {:else}
                 <span class="text-obsidian-500">-</span>

@@ -690,13 +690,9 @@ export interface components {
     };
     TechnicalInterviewLoginRequest: {
       job_requirement_id: string;
-      email: string;
-      password: string;
     };
     HRInterviewLoginRequest: {
       job_requirement_id: string;
-      email: string;
-      password: string;
     };
     CompleteInterviewRequest: {
       interview_duration_seconds: number;

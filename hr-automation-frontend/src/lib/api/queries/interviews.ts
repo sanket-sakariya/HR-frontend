@@ -16,7 +16,8 @@ export function useTechnicalInterviews(jobId: string | null, status?: string) {
         }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to fetch technical interviews');
-      return response.data?.data as TechnicalInterview[];
+      // API returns { data: { interviews: [...] } }
+      return (response.data?.data?.interviews || []) as TechnicalInterview[];
     },
     enabled: !!jobId
   });
@@ -86,14 +87,14 @@ export function useStartTechnicalInterview() {
   return createMutation({
     mutationFn: async ({
       candidateId,
-      payload
+      jobRequirementId
     }: {
       candidateId: string;
-      payload: components['schemas']['TechnicalInterviewLoginRequest'];
+      jobRequirementId: string;
     }) => {
-      const response = await api.POST('/technical-interview/start/{candidate_id}', {
+      const response: any = await api.POST('/technical-interview/start/{candidate_id}', {
         params: { path: { candidate_id: candidateId } },
-        body: payload
+        body: { job_requirement_id: jobRequirementId }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to start interview');
       return response.data;
@@ -161,7 +162,8 @@ export function useHRInterviews(jobId: string | null, status?: string) {
         }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to fetch HR interviews');
-      return response.data?.data as HRInterview[];
+      // API returns { data: { interviews: [...] } }
+      return (response.data?.data?.interviews || []) as HRInterview[];
     },
     enabled: !!jobId
   });
@@ -231,14 +233,14 @@ export function useStartHRInterview() {
   return createMutation({
     mutationFn: async ({
       candidateId,
-      payload
+      jobRequirementId
     }: {
       candidateId: string;
-      payload: components['schemas']['HRInterviewLoginRequest'];
+      jobRequirementId: string;
     }) => {
       const response = await api.POST('/hr-interview/start/{candidate_id}', {
         params: { path: { candidate_id: candidateId } },
-        body: payload
+        body: { job_requirement_id: jobRequirementId }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to start interview');
       return response.data;
