@@ -92,6 +92,31 @@ export function useSelectTopResumes() {
   });
 }
 
+// Fetch candidates for all jobs (aggregated)
+export function useAllJobsCandidates(jobIds: string[]) {
+  return createQuery({
+    queryKey: ['all-candidates', jobIds],
+    queryFn: async () => {
+      if (!jobIds.length) return [];
+      const results = await Promise.all(
+        jobIds.map(async (jobId) => {
+          try {
+            const response: any = await api.GET('/candidates/', {
+              params: { query: { job_requirement_id: jobId } }
+            });
+            const candidates = response.data?.data?.data || response.data?.data || [];
+            return Array.isArray(candidates) ? candidates : [];
+          } catch {
+            return [];
+          }
+        })
+      );
+      return results.flat();
+    },
+    enabled: jobIds.length > 0
+  });
+}
+
 // Alias exports for convenience
 export const createCandidatesQuery = (params?: Parameters<typeof useCandidates>[0]) => useCandidates(params);
 export const createCandidateQuery = (candidateId: string | null) => useCandidate(candidateId);

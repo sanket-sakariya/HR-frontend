@@ -43,11 +43,6 @@ export const NAV_ITEMS = [
     icon: 'Briefcase'
   },
   {
-    label: 'Candidates',
-    href: ROUTES.candidates,
-    icon: 'Users'
-  },
-  {
     label: 'Analytics',
     href: ROUTES.analytics,
     icon: 'BarChart3'

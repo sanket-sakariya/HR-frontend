@@ -1,29 +1,26 @@
 <script lang="ts">
-  import { useCandidates } from '$lib/api/queries/candidates';
   import StatusBadge from '$lib/components/shared/StatusBadge.svelte';
   import ScoreGauge from '$lib/components/shared/ScoreGauge.svelte';
   import Skeleton from '$lib/components/ui/Skeleton.svelte';
-  import { formatRelativeTime } from '$lib/utils/format';
 
   interface Props {
     companyId: string;
-    jobId?: string;
+    candidates?: any[];
+    loading?: boolean;
   }
 
-  let { companyId, jobId }: Props = $props();
+  let { companyId, candidates = [], loading = false }: Props = $props();
 
-  const candidatesQuery = useCandidates(jobId ? { job_requirement_id: jobId, limit: 5 } : undefined);
+  // Sort by created_at descending and take top 10
+  let recentCandidates = $derived.by(() => {
+    return [...candidates]
+      .sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())
+      .slice(0, 10);
+  });
 </script>
 
 <div class="space-y-3">
-  {#if !jobId}
-    <div class="text-center py-8">
-      <p class="text-slate-400">Select a job to view candidates</p>
-      <p class="text-sm text-slate-500 mt-1">
-        Candidates are displayed per job requirement
-      </p>
-    </div>
-  {:else if $candidatesQuery.isLoading}
+  {#if loading}
     {#each Array(3) as _}
       <div class="flex items-center gap-4 p-4 rounded-lg bg-obsidian-800/50">
         <Skeleton class="w-10 h-10 rounded-full" />
@@ -33,7 +30,7 @@
         </div>
       </div>
     {/each}
-  {:else if $candidatesQuery.data?.data?.data?.length === 0}
+  {:else if recentCandidates.length === 0}
     <div class="text-center py-8">
       <p class="text-slate-400">No candidates yet</p>
       <p class="text-sm text-slate-500 mt-1">
@@ -41,7 +38,7 @@
       </p>
     </div>
   {:else}
-    {#each ($candidatesQuery.data?.data?.data || []).slice(0, 5) as candidate (candidate.candidate_id)}
+    {#each recentCandidates as candidate (candidate.candidate_id)}
       <a
         href="/candidates/{candidate.candidate_id}"
         class="flex items-center gap-4 p-4 rounded-lg bg-obsidian-800/50 hover:bg-obsidian-800 border border-slate-800/50 hover:border-slate-700 transition-all"
@@ -73,13 +70,10 @@
       </a>
     {/each}
 
-    {#if ($candidatesQuery.data?.data?.pagination?.total_count || 0) > 5}
-      <a
-        href="/candidates"
-        class="block text-center py-3 text-sm text-royal-400 hover:text-royal-300 font-medium"
-      >
-        View all candidates →
-      </a>
+    {#if candidates.length > 10}
+      <p class="text-center py-2 text-sm text-slate-500">
+        Showing 10 of {candidates.length} candidates
+      </p>
     {/if}
   {/if}
 </div>

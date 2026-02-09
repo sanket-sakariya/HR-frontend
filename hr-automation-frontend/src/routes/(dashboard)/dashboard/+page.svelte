@@ -2,6 +2,7 @@
   import { authStore } from '$lib/stores/auth.svelte';
   import { useCompanies, useCompany } from '$lib/api/queries/companies';
   import { useJobRequirements } from '$lib/api/queries/jobs';
+  import { api } from '$lib/api/client';
   import StatCard from '$lib/components/dashboard/StatCard.svelte';
   import JobsOverview from '$lib/components/dashboard/JobsOverview.svelte';
   import RecentCandidates from '$lib/components/dashboard/RecentCandidates.svelte';
@@ -27,12 +28,47 @@
   const companyQuery = useCompany(companyId);
   const jobsQuery = useJobRequirements(companyId);
 
-  // Derived stats from jobs data
+  // Derive job IDs for fetching all candidates
+  let jobIds = $derived.by(() => {
+    const jobs = $jobsQuery.data?.data || [];
+    return jobs.map((j: any) => j.job_requirement_id || j.id).filter(Boolean) as string[];
+  });
+
+  // Reactively fetch all candidates across all jobs
+  let allCandidates = $state<any[]>([]);
+  let candidatesLoading = $state(false);
+
+  $effect(() => {
+    const ids = jobIds;
+    if (!ids.length) {
+      allCandidates = [];
+      return;
+    }
+    candidatesLoading = true;
+    Promise.all(
+      ids.map(async (jobId) => {
+        try {
+          const response: any = await api.GET('/candidates/', {
+            params: { query: { job_requirement_id: jobId } }
+          });
+          const candidates = response.data?.data?.data || response.data?.data || [];
+          return Array.isArray(candidates) ? candidates : [];
+        } catch {
+          return [];
+        }
+      })
+    ).then((results) => {
+      allCandidates = results.flat();
+      candidatesLoading = false;
+    });
+  });
+
+  // Derived stats from jobs + candidates data
   let stats = $derived.by(() => {
     const jobs = $jobsQuery.data?.data || [];
     const totalJobs = jobs.length;
     const activeJobs = jobs.filter((j: any) => j.status === 'active').length;
-    const totalCandidates = jobs.reduce((acc: number, j: any) => acc + (j.candidates_count || 0), 0);
+    const totalCandidates = allCandidates.length;
     
     return {
       totalJobs,
@@ -151,7 +187,7 @@
           View all
         </a>
       </div>
-      <RecentCandidates companyId={companyId || ''} />
+      <RecentCandidates companyId={companyId || ''} candidates={allCandidates} loading={candidatesLoading} />
     </div>
   </div>
 </div>
