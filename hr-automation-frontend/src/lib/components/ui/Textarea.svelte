@@ -36,8 +36,8 @@
   {rows}
   {oninput}
   class={cn(
-    'w-full bg-obsidian-800 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-200 placeholder:text-slate-500',
-    'focus:border-royal-500 focus:ring-1 focus:ring-royal-500 focus:outline-none',
+    'w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-800 placeholder:text-gray-400',
+    'focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 focus:outline-none',
     'transition-colors duration-200 resize-none',
     'disabled:opacity-50 disabled:cursor-not-allowed',
     className

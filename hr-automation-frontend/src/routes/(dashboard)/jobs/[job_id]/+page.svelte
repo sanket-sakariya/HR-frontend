@@ -236,10 +236,10 @@
     <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
       <div>
         <div class="flex items-center gap-3 mb-2">
-          <h1 class="text-2xl font-bold text-slate-100">{job.title}</h1>
+          <h1 class="text-2xl font-bold text-gray-900">{job.title}</h1>
           <StatusBadge status={job.status} />
         </div>
-        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-400">
+        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
           {#if job.department}
             <span>{job.department}</span>
           {/if}
@@ -293,17 +293,17 @@
 
     <!-- Job Details Card -->
     <div class="card-executive p-6">
-      <h3 class="text-lg font-semibold text-slate-100 mb-4">Job Description</h3>
-      <p class="text-slate-400 whitespace-pre-wrap">{job.description}</p>
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Job Description</h3>
+      <p class="text-gray-500 whitespace-pre-wrap">{job.description}</p>
 
       {#if job.requirements && job.requirements.length > 0}
-        <div class="mt-6 pt-6 border-t border-slate-800">
-          <h4 class="text-sm font-medium text-slate-300 mb-3">Required Skills</h4>
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <h4 class="text-sm font-medium text-gray-700 mb-3">Required Skills</h4>
           <div class="flex flex-wrap gap-2">
             {#each job.requirements as skill}
-              <span class="px-3 py-1.5 rounded-lg bg-obsidian-800 text-sm text-slate-300">
+              <span class="px-3 py-1.5 rounded-lg bg-gray-50 text-sm text-gray-700">
                 {skill.skill}
-                <span class="text-slate-500 ml-1">({skill.level})</span>
+                <span class="text-gray-400 ml-1">({skill.level})</span>
               </span>
             {/each}
           </div>
@@ -311,8 +311,8 @@
       {/if}
 
       {#if job.benefits && job.benefits.length > 0}
-        <div class="mt-6 pt-6 border-t border-slate-800">
-          <h4 class="text-sm font-medium text-slate-300 mb-3">Benefits</h4>
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <h4 class="text-sm font-medium text-gray-700 mb-3">Benefits</h4>
           <div class="flex flex-wrap gap-2">
             {#each job.benefits as benefit}
               <span class="px-3 py-1.5 rounded-lg bg-success/10 text-sm text-success border border-success/20">
@@ -326,13 +326,13 @@
 
     <!-- Actions Card -->
     <div class="card-executive p-6">
-      <h3 class="text-lg font-semibold text-slate-100 mb-4">Actions</h3>
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Select Top Resumes -->
-        <div class="p-4 rounded-lg bg-obsidian-800/50 border border-slate-700">
-          <h4 class="font-medium text-slate-200 mb-2">AI Resume Screening</h4>
-          <p class="text-sm text-slate-400 mb-3">Select top candidates based on resume scores</p>
+        <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
+          <h4 class="font-medium text-gray-800 mb-2">AI Resume Screening</h4>
+          <p class="text-sm text-gray-500 mb-3">Select top candidates based on resume scores</p>
           <div class="flex gap-2">
             <Input
               type="number"
@@ -350,9 +350,9 @@
         </div>
 
         <!-- Create Aptitude Test -->
-        <div class="p-4 rounded-lg bg-obsidian-800/50 border border-slate-700">
-          <h4 class="font-medium text-slate-200 mb-2">Aptitude Test</h4>
-          <p class="text-sm text-slate-400 mb-3">Create AI-generated aptitude test</p>
+        <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
+          <h4 class="font-medium text-gray-800 mb-2">Aptitude Test</h4>
+          <p class="text-sm text-gray-500 mb-3">Create AI-generated aptitude test</p>
           <Button 
             variant="secondary" 
             onclick={handleCreateAptitudeTest}
@@ -364,9 +364,9 @@
         </div>
 
         <!-- Technical Interviews -->
-        <div class="p-4 rounded-lg bg-obsidian-800/50 border border-slate-700">
-          <h4 class="font-medium text-slate-200 mb-2">Technical Interviews</h4>
-          <p class="text-sm text-slate-400 mb-3">View technical interview results</p>
+        <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
+          <h4 class="font-medium text-gray-800 mb-2">Technical Interviews</h4>
+          <p class="text-sm text-gray-500 mb-3">View technical interview results</p>
           <Button variant="secondary" onclick={() => goto(`/jobs/${jobId}/technical`)}>
             <Video class="w-4 h-4" />
             View Results
@@ -374,9 +374,9 @@
         </div>
 
         <!-- HR Interviews -->
-        <div class="p-4 rounded-lg bg-obsidian-800/50 border border-slate-700">
-          <h4 class="font-medium text-slate-200 mb-2">HR Interviews</h4>
-          <p class="text-sm text-slate-400 mb-3">View HR interview results</p>
+        <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
+          <h4 class="font-medium text-gray-800 mb-2">HR Interviews</h4>
+          <p class="text-sm text-gray-500 mb-3">View HR interview results</p>
           <Button variant="secondary" onclick={() => goto(`/jobs/${jobId}/hr`)}>
             <UserCheck class="w-4 h-4" />
             View Results
@@ -387,13 +387,13 @@
 
     <!-- Tabs -->
     <div class="card-executive">
-      <div class="border-b border-slate-800">
+      <div class="border-b border-gray-200">
         <nav class="flex gap-1 p-2">
           {#each tabs as tab}
             {@const Icon = tab.icon}
             <button
               onclick={() => activeTab = tab.id}
-              class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors {activeTab === tab.id ? 'bg-royal-500/10 text-royal-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'}"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors {activeTab === tab.id ? 'bg-purple-50 text-purple-600' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'}"
             >
               <Icon class="w-4 h-4" />
               {tab.label}
@@ -409,39 +409,39 @@
             <Skeleton class="h-48" />
           {:else if ($candidatesQuery.data?.data?.data?.length || 0) === 0}
             <div class="text-center py-12">
-              <Users class="w-12 h-12 text-slate-600 mx-auto mb-4" />
-              <h4 class="text-lg font-medium text-slate-300 mb-2">No candidates yet</h4>
-              <p class="text-slate-500">Candidates will appear here once they apply</p>
+              <Users class="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h4 class="text-lg font-medium text-gray-700 mb-2">No candidates yet</h4>
+              <p class="text-gray-400">Candidates will appear here once they apply</p>
             </div>
           {:else}
             <div class="space-y-6">
               <!-- Pipeline stages - cumulative view -->
               <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
                 {#each candidatesPipeline as stage}
-                  <div class="rounded-lg bg-obsidian-800/50 border border-slate-700 overflow-hidden">
+                  <div class="rounded-lg bg-gray-50 border border-gray-200 overflow-hidden">
                     <!-- Stage header -->
-                    <div class="px-4 py-3 border-b border-slate-700/50">
+                    <div class="px-4 py-3 border-b border-gray-100">
                       <div class="flex items-center justify-between">
-                        <h5 class="text-sm font-semibold text-slate-200">{stage.label}</h5>
-                        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300">{stage.candidates.length}</span>
+                        <h5 class="text-sm font-semibold text-gray-800">{stage.label}</h5>
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-gray-700">{stage.candidates.length}</span>
                       </div>
                       {#if stage.candidates.length > 0}
                         <div class="flex gap-3 mt-2 text-xs">
                           {#if stage.passedCount > 0}
-                            <span class="flex items-center gap-1 text-emerald-400">
-                              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            <span class="flex items-center gap-1 text-emerald-600">
+                              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                               {stage.passedCount} passed
                             </span>
                           {/if}
                           {#if stage.failedCount > 0}
-                            <span class="flex items-center gap-1 text-red-400">
-                              <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                            <span class="flex items-center gap-1 text-red-600">
+                              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                               {stage.failedCount} failed
                             </span>
                           {/if}
                           {#if stage.currentCount > 0}
-                            <span class="flex items-center gap-1 text-royal-400">
-                              <span class="w-1.5 h-1.5 rounded-full bg-royal-400"></span>
+                            <span class="flex items-center gap-1 text-purple-600">
+                              <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
                               {stage.currentCount} active
                             </span>
                           {/if}
@@ -453,21 +453,21 @@
                       {#each stage.candidates as { candidate, stageStatus } (candidate.candidate_id)}
                         <a
                           href="/candidates/{candidate.candidate_id}"
-                          class="flex items-center gap-2.5 p-2 rounded-md transition-colors hover:bg-obsidian-900/80 {stageStatus === 'passed' ? 'bg-emerald-500/5' : stageStatus === 'failed' ? 'bg-red-500/5' : 'bg-royal-500/5'}"
+                          class="flex items-center gap-2.5 p-2 rounded-md transition-colors hover:bg-white/80 {stageStatus === 'passed' ? 'bg-emerald-50/50' : stageStatus === 'failed' ? 'bg-red-50/50' : 'bg-purple-50/50'}"
                         >
-                          <span class="flex-shrink-0 w-2 h-2 rounded-full {stageStatus === 'passed' ? 'bg-emerald-400' : stageStatus === 'failed' ? 'bg-red-400' : 'bg-royal-400'}"></span>
+                          <span class="flex-shrink-0 w-2 h-2 rounded-full {stageStatus === 'passed' ? 'bg-emerald-500' : stageStatus === 'failed' ? 'bg-red-500' : 'bg-purple-500'}"></span>
                           <div class="min-w-0 flex-1">
-                            <p class="text-sm text-slate-200 truncate">
+                            <p class="text-sm text-gray-800 truncate">
                               {candidate.first_name} {candidate.last_name}
                             </p>
                           </div>
-                          <span class="flex-shrink-0 text-[10px] font-medium uppercase tracking-wide {stageStatus === 'passed' ? 'text-emerald-400' : stageStatus === 'failed' ? 'text-red-400' : 'text-royal-400'}">
+                          <span class="flex-shrink-0 text-[10px] font-medium uppercase tracking-wide {stageStatus === 'passed' ? 'text-emerald-600' : stageStatus === 'failed' ? 'text-red-600' : 'text-purple-600'}">
                             {stageStatus === 'passed' ? '✓ Passed' : stageStatus === 'failed' ? '✗ Failed' : '● Active'}
                           </span>
                         </a>
                       {/each}
                       {#if stage.candidates.length === 0}
-                        <p class="text-xs text-slate-500 text-center py-4">No candidates yet</p>
+                        <p class="text-xs text-gray-400 text-center py-4">No candidates yet</p>
                       {/if}
                     </div>
                   </div>
@@ -477,9 +477,9 @@
           {/if}
         {:else if activeTab === 'aptitude'}
           <div class="text-center py-12">
-            <Brain class="w-12 h-12 text-slate-600 mx-auto mb-4" />
-            <h4 class="text-lg font-medium text-slate-300 mb-2">Aptitude Test Management</h4>
-            <p class="text-slate-500 mb-4">Create and manage aptitude tests for this job</p>
+            <Brain class="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h4 class="text-lg font-medium text-gray-700 mb-2">Aptitude Test Management</h4>
+            <p class="text-gray-400 mb-4">Create and manage aptitude tests for this job</p>
             <Button onclick={() => goto(`/jobs/${jobId}/aptitude`)}>
               Manage Aptitude Tests
             </Button>
@@ -488,25 +488,25 @@
           <div class="space-y-6">
             <!-- Candidates eligible for technical interview -->
             <div>
-              <h4 class="text-lg font-medium text-slate-200 mb-4">Candidates Eligible for Technical Interview</h4>
-              <p class="text-sm text-slate-400 mb-4">These candidates have passed the aptitude test and are ready for technical interview.</p>
+              <h4 class="text-lg font-medium text-gray-800 mb-4">Candidates Eligible for Technical Interview</h4>
+              <p class="text-sm text-gray-500 mb-4">These candidates have passed the aptitude test and are ready for technical interview.</p>
               
               {#if technicalEligibleCandidates.length === 0}
-                <div class="text-center py-8 bg-obsidian-800/30 rounded-lg">
-                  <Video class="w-10 h-10 text-slate-600 mx-auto mb-3" />
-                  <p class="text-slate-400">No candidates eligible for technical interview yet</p>
-                  <p class="text-sm text-slate-500 mt-1">Candidates will appear here after passing the aptitude test</p>
+                <div class="text-center py-8 bg-gray-50/50 rounded-lg">
+                  <Video class="w-10 h-10 text-gray-400 mx-auto mb-3" />
+                  <p class="text-gray-500">No candidates eligible for technical interview yet</p>
+                  <p class="text-sm text-gray-400 mt-1">Candidates will appear here after passing the aptitude test</p>
                 </div>
               {:else}
                 <div class="grid gap-4">
                   {#each technicalEligibleCandidates as candidate (candidate.candidate_id)}
-                    <div class="p-4 rounded-lg bg-obsidian-800/50 border border-slate-700">
+                    <div class="p-4 rounded-lg bg-gray-50 border border-gray-200">
                       <div class="flex items-center justify-between">
                         <div>
-                          <p class="font-medium text-slate-200">{candidate.first_name} {candidate.last_name}</p>
-                          <p class="text-sm text-slate-400">{candidate.email}</p>
+                          <p class="font-medium text-gray-800">{candidate.first_name} {candidate.last_name}</p>
+                          <p class="text-sm text-gray-500">{candidate.email}</p>
                           {#if candidate.aptitude_test_result}
-                            <p class="text-xs text-emerald-400 mt-1">Aptitude: Passed</p>
+                            <p class="text-xs text-emerald-600 mt-1">Aptitude: Passed</p>
                           {/if}
                         </div>
                         <div class="flex items-center gap-2">
@@ -528,9 +528,9 @@
             </div>
 
             <!-- Existing technical interviews -->
-            <div class="pt-6 border-t border-slate-700">
+            <div class="pt-6 border-t border-gray-200">
               <div class="flex items-center justify-between mb-4">
-                <h4 class="text-lg font-medium text-slate-200">Technical Interview Results</h4>
+                <h4 class="text-lg font-medium text-gray-800">Technical Interview Results</h4>
                 <Button variant="ghost" size="sm" onclick={() => goto(`/jobs/${jobId}/technical`)}>
                   View All
                   <ExternalLink class="w-4 h-4 ml-2" />
@@ -540,20 +540,20 @@
               {#if $technicalInterviewsQuery.isLoading}
                 <Skeleton class="h-32" />
               {:else if ($technicalInterviewsQuery.data || []).length === 0}
-                <div class="text-center py-8 bg-obsidian-800/30 rounded-lg">
-                  <CheckCircle class="w-10 h-10 text-slate-600 mx-auto mb-3" />
-                  <p class="text-slate-400">No technical interviews completed yet</p>
+                <div class="text-center py-8 bg-gray-50/50 rounded-lg">
+                  <CheckCircle class="w-10 h-10 text-gray-400 mx-auto mb-3" />
+                  <p class="text-gray-500">No technical interviews completed yet</p>
                 </div>
               {:else}
                 <div class="space-y-3">
                   {#each ($technicalInterviewsQuery.data || []).slice(0, 5) as interview}
-                    <div class="p-4 rounded-lg bg-obsidian-800/50 border border-slate-700 flex items-center justify-between">
+                    <div class="p-4 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-between">
                       <div>
-                        <p class="font-medium text-slate-200">{interview.candidate_name || 'Candidate'}</p>
+                        <p class="font-medium text-gray-800">{interview.candidate_name || 'Candidate'}</p>
                         <div class="flex items-center gap-3 mt-1">
                           <StatusBadge status={interview.interview_status || 'pending'} />
                           {#if interview.overall_score}
-                            <span class="text-sm {interview.overall_score >= 70 ? 'text-emerald-400' : interview.overall_score >= 50 ? 'text-amber-400' : 'text-red-400'}">
+                            <span class="text-sm {interview.overall_score >= 70 ? 'text-emerald-600' : interview.overall_score >= 50 ? 'text-amber-600' : 'text-red-600'}">
                               Score: {interview.overall_score}%
                             </span>
                           {/if}
@@ -572,9 +572,9 @@
           </div>
         {:else if activeTab === 'hr'}
           <div class="text-center py-12">
-            <UserCheck class="w-12 h-12 text-slate-600 mx-auto mb-4" />
-            <h4 class="text-lg font-medium text-slate-300 mb-2">HR Interviews</h4>
-            <p class="text-slate-500 mb-4">View AI-powered HR interview results</p>
+            <UserCheck class="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h4 class="text-lg font-medium text-gray-700 mb-2">HR Interviews</h4>
+            <p class="text-gray-400 mb-4">View AI-powered HR interview results</p>
             <Button onclick={() => goto(`/jobs/${jobId}/hr`)}>
               View HR Interviews
             </Button>
@@ -594,8 +594,8 @@
   />
 {:else}
   <div class="card-executive p-12 text-center">
-    <h2 class="text-xl font-semibold text-slate-200 mb-2">Job not found</h2>
-    <p class="text-slate-400 mb-4">The job requirement you're looking for doesn't exist</p>
+    <h2 class="text-xl font-semibold text-gray-800 mb-2">Job not found</h2>
+    <p class="text-gray-500 mb-4">The job requirement you're looking for doesn't exist</p>
     <Button onclick={() => goto('/jobs')}>Back to Jobs</Button>
   </div>
 {/if}

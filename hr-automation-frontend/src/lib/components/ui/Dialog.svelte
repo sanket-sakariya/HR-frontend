@@ -32,7 +32,7 @@
 {#if open}
   <!-- Backdrop -->
   <div
-    class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm animate-in"
+    class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm animate-fade-in"
     onclick={handleBackdropClick}
     role="button"
     tabindex="-1"
@@ -42,7 +42,7 @@
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
     <div
       class={cn(
-        'card-executive border border-slate-700 p-6 w-full max-w-md animate-in pointer-events-auto',
+        'bg-white border border-gray-200 rounded-2xl shadow-elevated p-6 w-full max-w-md animate-scale-in pointer-events-auto',
         className
       )}
       role="dialog"

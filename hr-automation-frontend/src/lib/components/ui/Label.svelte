@@ -18,12 +18,12 @@
 <label
   for={htmlFor}
   class={cn(
-    'block text-sm font-medium text-slate-300 mb-1.5',
+    'block text-sm font-semibold text-gray-700 mb-1.5',
     className
   )}
 >
   {@render children?.()}
   {#if required}
-    <span class="text-danger ml-0.5">*</span>
+    <span class="text-purple-500 ml-0.5">*</span>
   {/if}
 </label>

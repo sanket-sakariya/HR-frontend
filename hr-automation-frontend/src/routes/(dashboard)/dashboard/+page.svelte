@@ -88,7 +88,7 @@
   <div class="flex items-center justify-center min-h-[60vh]">
     <div class="text-center">
       <div class="animate-spin rounded-full h-12 w-12 border-4 border-royal-500 border-t-transparent mx-auto mb-4"></div>
-      <p class="text-slate-400">Loading your dashboard...</p>
+      <p class="text-gray-500">Loading your dashboard...</p>
     </div>
   </div>
 {:else if !companyId && !$companiesQuery.isLoading}
@@ -96,10 +96,10 @@
   <div class="flex items-center justify-center min-h-[60vh]">
     <div class="text-center max-w-md">
       <div class="w-16 h-16 rounded-2xl bg-royal-900/50 flex items-center justify-center mx-auto mb-6">
-        <Briefcase class="w-8 h-8 text-royal-400" />
+        <Briefcase class="w-8 h-8 text-purple-600" />
       </div>
-      <h2 class="text-2xl font-bold text-slate-100 mb-2">Welcome to HR Automation!</h2>
-      <p class="text-slate-400 mb-6">
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">Welcome to HR Automation!</h2>
+      <p class="text-gray-500 mb-6">
         To get started, please register your company details first.
       </p>
       <Button onclick={() => window.location.href = '/company'}>
@@ -112,10 +112,10 @@
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-slate-100">
+      <h1 class="text-2xl font-bold text-gray-900">
         Welcome back{$companyQuery.data?.company_name ? `, ${$companyQuery.data.company_name}` : ''}!
       </h1>
-      <p class="text-slate-400 mt-1">Here's what's happening with your hiring pipeline</p>
+      <p class="text-gray-500 mt-1">Here's what's happening with your hiring pipeline</p>
     </div>
     <Button onclick={() => window.location.href = '/jobs/new'}>
       <Plus class="w-4 h-4" />
@@ -162,8 +162,8 @@
     <!-- Jobs Overview -->
     <div class="card-executive p-6">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-semibold text-slate-100">Job Requirements</h2>
-        <a href="/jobs" class="text-sm text-royal-400 hover:text-royal-300 font-medium">
+        <h2 class="text-lg font-semibold text-gray-900">Job Requirements</h2>
+        <a href="/jobs" class="text-sm text-purple-600 hover:text-purple-500 font-medium">
           View all
         </a>
       </div>
@@ -182,8 +182,8 @@
     <!-- Recent Candidates -->
     <div class="card-executive p-6">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-semibold text-slate-100">Recent Candidates</h2>
-        <a href="/candidates" class="text-sm text-royal-400 hover:text-royal-300 font-medium">
+        <h2 class="text-lg font-semibold text-gray-900">Recent Candidates</h2>
+        <a href="/candidates" class="text-sm text-purple-600 hover:text-purple-500 font-medium">
           View all
         </a>
       </div>

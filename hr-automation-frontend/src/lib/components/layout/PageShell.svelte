@@ -11,7 +11,7 @@
   let { title = '', children }: Props & { children?: any } = $props();
 </script>
 
-<div class="min-h-screen bg-obsidian-950">
+<div class="min-h-screen bg-surface-200">
   <Sidebar />
   
   <div class={cn(
@@ -20,7 +20,7 @@
   )}>
     <Header {title} />
     
-    <main class="p-4 lg:p-6">
+    <main class="p-4 lg:p-6 animate-fade-in">
       {@render children?.()}
     </main>
   </div>

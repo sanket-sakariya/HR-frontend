@@ -23,11 +23,11 @@
   }: Props & { children?: any } = $props();
 
   const variants = {
-    primary: 'bg-gradient-to-r from-royal-600 to-royal-500 hover:from-royal-500 hover:to-royal-400 text-white shadow-lg shadow-royal-500/20 hover:shadow-royal-500/30',
-    secondary: 'bg-obsidian-800 hover:bg-obsidian-700 text-slate-200 border border-slate-700',
-    ghost: 'hover:bg-slate-800/50 text-slate-400 hover:text-slate-200',
-    danger: 'bg-danger/10 hover:bg-danger/20 text-danger border border-danger/20',
-    success: 'bg-success/10 hover:bg-success/20 text-success border border-success/20'
+    primary: 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white shadow-purple-sm hover:shadow-purple-md hover:-translate-y-0.5 active:translate-y-0',
+    secondary: 'bg-white hover:bg-purple-50 text-gray-700 border border-gray-200 hover:border-purple-300',
+    ghost: 'hover:bg-purple-50 text-gray-500 hover:text-purple-700',
+    danger: 'bg-red-50 hover:bg-red-100 text-red-600 border border-red-200',
+    success: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200'
   };
 
   const sizes = {
@@ -42,7 +42,7 @@
   {disabled}
   {onclick}
   class={cn(
-    'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-royal-500 focus:ring-offset-2 focus:ring-offset-obsidian-950 disabled:opacity-50 disabled:cursor-not-allowed',
+    'inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:ring-offset-2 focus:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed',
     variants[variant],
     sizes[size],
     className

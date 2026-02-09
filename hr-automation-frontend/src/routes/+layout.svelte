@@ -21,12 +21,12 @@
 </QueryClientProvider>
 
 <Toaster
-  theme="dark"
+  theme="light"
   position="top-right"
   richColors
   toastOptions={{
     classNames: {
-      toast: 'glass border-slate-700'
+      toast: 'bg-white border-gray-200 shadow-elevated'
     }
   }}
 />

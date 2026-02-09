@@ -8,4 +8,4 @@
   let { class: className = '' }: Props = $props();
 </script>
 
-<div class={cn('animate-pulse rounded-lg bg-slate-800', className)}></div>
+<div class={cn('animate-pulse rounded-xl bg-gray-200/60', className)}></div>
