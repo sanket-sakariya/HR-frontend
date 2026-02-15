@@ -22,7 +22,7 @@
 <div class="space-y-3">
   {#if loading}
     {#each Array(3) as _}
-      <div class="flex items-center gap-4 p-4 rounded-lg bg-obsidian-800/50">
+      <div class="flex items-center gap-4 p-4 rounded-lg bg-gray-100">
         <Skeleton class="w-10 h-10 rounded-full" />
         <div class="flex-1">
           <Skeleton class="h-4 w-32 mb-2" />
@@ -41,7 +41,7 @@
     {#each recentCandidates as candidate (candidate.candidate_id)}
       <a
         href="/candidates/{candidate.candidate_id}"
-        class="flex items-center gap-4 p-4 rounded-lg bg-obsidian-800/50 hover:bg-obsidian-800 border border-slate-800/50 hover:border-slate-700 transition-all"
+        class="flex items-center gap-4 p-4 rounded-lg bg-gray-100 hover:bg-gray-100 border border-slate-800/50 hover:border-slate-700 transition-all"
       >
         <!-- Avatar -->
         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-royal-600 to-royal-500 flex items-center justify-center flex-shrink-0">
@@ -53,7 +53,7 @@
         <!-- Info -->
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-1">
-            <h4 class="font-medium text-slate-200 truncate">
+            <h4 class="font-medium text-gray-800 truncate">
               {candidate.first_name} {candidate.last_name}
             </h4>
             <StatusBadge status={candidate.status} size="sm" />

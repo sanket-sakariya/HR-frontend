@@ -40,7 +40,7 @@
 </script>
 
 <div class={cn(
-  'bg-obsidian-800 border border-obsidian-700 rounded-lg p-4 hover:border-royal-500/50 transition-colors',
+  'bg-gray-100 border border-gray-200 rounded-lg p-4 hover:border-royal-500/50 transition-colors',
   className
 )}>
   <div class="flex items-start gap-4">
@@ -55,9 +55,9 @@
     <div class="flex-1 min-w-0">
       <div class="flex items-start justify-between gap-2">
         <div>
-          <h3 class="font-semibold text-obsidian-100 truncate">{[candidate.first_name, candidate.last_name].filter(Boolean).join(' ') || 'Unknown'}</h3>
+          <h3 class="font-semibold text-gray-900 truncate">{[candidate.first_name, candidate.last_name].filter(Boolean).join(' ') || 'Unknown'}</h3>
           {#if candidate.email}
-            <p class="text-sm text-obsidian-400 flex items-center gap-1 mt-0.5">
+            <p class="text-sm text-gray-500 flex items-center gap-1 mt-0.5">
               <Mail class="w-3 h-3" />
               {candidate.email}
             </p>
@@ -66,7 +66,7 @@
         <StatusBadge status={currentStatus.label} variant={currentStatus.variant} />
       </div>
 
-      <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-obsidian-400">
+      <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
         {#if candidate.email}
           <span class="flex items-center gap-1">
             <Mail class="w-3 h-3" />
@@ -87,12 +87,12 @@
           {#if (candidate as any).candidate_resume_score !== undefined}
             <div class="flex items-center gap-1">
               <Star class="w-4 h-4 text-amber-500" />
-              <span class="text-obsidian-200 font-medium">{(candidate as any).candidate_resume_score}%</span>
-              <span class="text-obsidian-500">Resume Score</span>
+              <span class="text-gray-700 font-medium">{(candidate as any).candidate_resume_score}%</span>
+              <span class="text-gray-400">Resume Score</span>
             </div>
           {/if}
           {#if candidate.created_at}
-            <span class="text-obsidian-500">
+            <span class="text-gray-400">
               Applied {formatRelative(candidate.created_at)}
             </span>
           {/if}

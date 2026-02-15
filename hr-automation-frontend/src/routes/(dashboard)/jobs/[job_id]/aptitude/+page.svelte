@@ -104,9 +104,9 @@
     <div>
       <div class="flex items-center gap-3 mb-2">
         <Brain class="w-6 h-6 text-royal-400" />
-        <h1 class="text-2xl font-bold text-obsidian-100">Aptitude Test</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Aptitude Test</h1>
       </div>
-      <p class="text-obsidian-400">
+      <p class="text-gray-500">
         AI-generated aptitude test for {job?.title || 'this job'}
       </p>
     </div>
@@ -117,9 +117,9 @@
   {:else if !createdTest}
     <!-- No Test Created Yet -->
     <Card class="p-12 text-center">
-      <Brain class="w-16 h-16 mx-auto text-obsidian-600 mb-4" />
-      <h3 class="text-lg font-medium text-obsidian-200 mb-2">No aptitude test yet</h3>
-      <p class="text-obsidian-400 mb-6 max-w-md mx-auto">
+      <Brain class="w-16 h-16 mx-auto text-gray-400 mb-4" />
+      <h3 class="text-lg font-medium text-gray-700 mb-2">No aptitude test yet</h3>
+      <p class="text-gray-500 mb-6 max-w-md mx-auto">
         Create an AI-generated aptitude test with 30 questions tailored to the job requirements. 
         Candidates who pass the resume screening will be able to take this test.
       </p>
@@ -144,12 +144,12 @@
           </div>
           <div class="flex-1">
             <div class="flex items-center gap-3 mb-2">
-              <h3 class="text-xl font-semibold text-obsidian-100">{createdTest.test_title}</h3>
+              <h3 class="text-xl font-semibold text-gray-900">{createdTest.test_title}</h3>
               <span class="px-2 py-1 rounded-full bg-emerald-900/50 text-emerald-400 text-xs font-medium">
                 Active
               </span>
             </div>
-            <div class="flex flex-wrap gap-4 text-sm text-obsidian-400">
+            <div class="flex flex-wrap gap-4 text-sm text-gray-500">
               <span class="flex items-center gap-1.5">
                 <Brain class="w-4 h-4" />
                 {createdTest.total_questions} Questions
@@ -165,17 +165,17 @@
 
       <!-- URLs Card -->
       <Card class="p-6">
-        <h4 class="font-medium text-obsidian-100 mb-4">Share Test with Candidates</h4>
-        <p class="text-sm text-obsidian-400 mb-4">
+        <h4 class="font-medium text-gray-900 mb-4">Share Test with Candidates</h4>
+        <p class="text-sm text-gray-500 mb-4">
           Share this URL with aptitude-eligible candidates so they can take the test:
         </p>
         
         <div class="space-y-4">
           <!-- Candidate Test URL -->
           <div>
-            <label class="text-xs text-obsidian-500 mb-1 block">Candidate Test URL</label>
+            <label class="text-xs text-gray-400 mb-1 block">Candidate Test URL</label>
             <div class="flex items-center gap-2">
-              <div class="flex-1 px-4 py-3 rounded-lg bg-obsidian-800 border border-obsidian-700 font-mono text-sm text-obsidian-300 truncate">
+              <div class="flex-1 px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 font-mono text-sm text-gray-600 truncate">
                 {window.location.origin}/aptitude/{jobId}
               </div>
               <Button variant="outline" onclick={copyCandidateUrl}>
@@ -186,9 +186,9 @@
 
           <!-- API Public URL -->
           <div>
-            <label class="text-xs text-obsidian-500 mb-1 block">API Public URL</label>
+            <label class="text-xs text-gray-400 mb-1 block">API Public URL</label>
             <div class="flex items-center gap-2">
-              <div class="flex-1 px-4 py-3 rounded-lg bg-obsidian-800 border border-obsidian-700 font-mono text-sm text-obsidian-300 truncate">
+              <div class="flex-1 px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 font-mono text-sm text-gray-600 truncate">
                 {createdTest.public_url}
               </div>
               <Button variant="outline" onclick={copyPublicUrl}>
@@ -199,9 +199,9 @@
 
           <!-- Test Access URL -->
           <div>
-            <label class="text-xs text-obsidian-500 mb-1 block">Direct Test Start URL</label>
+            <label class="text-xs text-gray-400 mb-1 block">Direct Test Start URL</label>
             <div class="flex items-center gap-2">
-              <div class="flex-1 px-4 py-3 rounded-lg bg-obsidian-800 border border-obsidian-700 font-mono text-sm text-obsidian-300 truncate">
+              <div class="flex-1 px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 font-mono text-sm text-gray-600 truncate">
                 {createdTest.test_access_url}
               </div>
               <Button variant="outline" onclick={copyTestAccessUrl}>
@@ -214,11 +214,11 @@
 
       <!-- Instructions Card -->
       <Card class="p-6">
-        <h4 class="font-medium text-obsidian-100 mb-4">How It Works</h4>
-        <ol class="space-y-3 text-sm text-obsidian-400">
+        <h4 class="font-medium text-gray-900 mb-4">How It Works</h4>
+        <ol class="space-y-3 text-sm text-gray-500">
           <li class="flex items-start gap-3">
             <span class="w-6 h-6 rounded-full bg-royal-900/50 text-royal-400 flex items-center justify-center flex-shrink-0 text-xs font-medium">1</span>
-            <span>Share the <strong class="text-obsidian-300">Candidate Test URL</strong> with aptitude-eligible candidates</span>
+            <span>Share the <strong class="text-gray-600">Candidate Test URL</strong> with aptitude-eligible candidates</span>
           </li>
           <li class="flex items-start gap-3">
             <span class="w-6 h-6 rounded-full bg-royal-900/50 text-royal-400 flex items-center justify-center flex-shrink-0 text-xs font-medium">2</span>
@@ -230,7 +230,7 @@
           </li>
           <li class="flex items-start gap-3">
             <span class="w-6 h-6 rounded-full bg-royal-900/50 text-royal-400 flex items-center justify-center flex-shrink-0 text-xs font-medium">4</span>
-            <span>Use <strong class="text-obsidian-300">Select Top Candidates</strong> to advance passing candidates to technical interviews</span>
+            <span>Use <strong class="text-gray-600">Select Top Candidates</strong> to advance passing candidates to technical interviews</span>
           </li>
         </ol>
       </Card>

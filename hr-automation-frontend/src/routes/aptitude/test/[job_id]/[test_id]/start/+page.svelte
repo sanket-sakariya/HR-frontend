@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { useValidateAptitudeLogin, useAptitudeLoginForm } from '$lib/api/queries/aptitude';
+  import { useValidateAptitudeLogin, useAptitudeTestForm } from '$lib/api/queries/aptitude';
   import Card from '$lib/components/ui/Card.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
@@ -20,8 +20,8 @@
   const jobId = $derived($page.params.job_id);
   const testId = $derived($page.params.test_id);
 
-  // Get login form info (only needs jobId now)
-  const loginFormQuery = useAptitudeLoginForm(jobId);
+  // Get test info
+  const testFormQuery = useAptitudeTestForm(jobId, testId);
   const validateLoginMutation = useValidateAptitudeLogin();
 
   // Form state
@@ -142,20 +142,20 @@
           </p>
         </div>
 
-        {#if $loginFormQuery.data?.data?.test_details}
+        {#if $testFormQuery.data?.data?.test_details}
           <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
             <div class="bg-obsidian-800/50 rounded-lg p-3 text-center">
               <Clock class="w-5 h-5 text-obsidian-400 mx-auto mb-1" />
               <p class="text-obsidian-500 text-xs">Duration</p>
               <p class="font-semibold text-obsidian-100">
-                {$loginFormQuery.data.data.test_details.total_time_minutes || 45} min
+                {$testFormQuery.data.data.test_details.total_time_minutes || 45} min
               </p>
             </div>
             <div class="bg-obsidian-800/50 rounded-lg p-3 text-center">
               <FileQuestion class="w-5 h-5 text-obsidian-400 mx-auto mb-1" />
               <p class="text-obsidian-500 text-xs">Questions</p>
               <p class="font-semibold text-obsidian-100">
-                {$loginFormQuery.data.data.test_details.total_questions || 30}
+                {$testFormQuery.data.data.test_details.total_questions || 30}
               </p>
             </div>
           </div>

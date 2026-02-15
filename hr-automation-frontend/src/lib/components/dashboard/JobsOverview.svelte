@@ -23,11 +23,11 @@
     {#each jobs.slice(0, 5) as job (job.job_requirement_id)}
       <a
         href="/jobs/{job.job_requirement_id}"
-        class="flex items-center justify-between p-4 rounded-lg bg-obsidian-800/50 hover:bg-obsidian-800 border border-slate-800/50 hover:border-slate-700 transition-all group"
+        class="flex items-center justify-between p-4 rounded-lg bg-gray-100 hover:bg-gray-100 border border-slate-800/50 hover:border-slate-700 transition-all group"
       >
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-3 mb-1">
-            <h4 class="font-medium text-slate-200 truncate">{job.title}</h4>
+            <h4 class="font-medium text-gray-800 truncate">{job.title}</h4>
             <StatusBadge status={job.status} size="sm" />
           </div>
           <div class="flex items-center gap-4 text-sm text-slate-500">

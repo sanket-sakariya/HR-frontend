@@ -77,9 +77,9 @@
     <div>
       <div class="flex items-center gap-3 mb-2">
         <Handshake class="w-6 h-6 text-purple-400" />
-        <h1 class="text-2xl font-bold text-obsidian-100">HR Interviews</h1>
+        <h1 class="text-2xl font-bold text-gray-900">HR Interviews</h1>
       </div>
-      <p class="text-obsidian-400">
+      <p class="text-gray-500">
         AI-powered cultural & behavioral interviews for {job?.title || 'this job'}
       </p>
     </div>
@@ -93,8 +93,8 @@
           <Handshake class="w-5 h-5 text-purple-400" />
         </div>
         <div>
-          <p class="text-2xl font-bold text-obsidian-100">{displayInterviews.length}</p>
-          <p class="text-xs text-obsidian-400">Total Interviews</p>
+          <p class="text-2xl font-bold text-gray-900">{displayInterviews.length}</p>
+          <p class="text-xs text-gray-500">Total Interviews</p>
         </div>
       </div>
     </Card>
@@ -104,10 +104,10 @@
           <Calendar class="w-5 h-5 text-blue-400" />
         </div>
         <div>
-          <p class="text-2xl font-bold text-obsidian-100">
+          <p class="text-2xl font-bold text-gray-900">
             {displayInterviews.filter(i => i.status === 'scheduled').length}
           </p>
-          <p class="text-xs text-obsidian-400">Scheduled</p>
+          <p class="text-xs text-gray-500">Scheduled</p>
         </div>
       </div>
     </Card>
@@ -117,10 +117,10 @@
           <CheckCircle class="w-5 h-5 text-emerald-400" />
         </div>
         <div>
-          <p class="text-2xl font-bold text-obsidian-100">
+          <p class="text-2xl font-bold text-gray-900">
             {displayInterviews.filter(i => i.status === 'completed').length}
           </p>
-          <p class="text-xs text-obsidian-400">Completed</p>
+          <p class="text-xs text-gray-500">Completed</p>
         </div>
       </div>
     </Card>
@@ -134,8 +134,8 @@
           {@const avgFit = completedWithScore.length > 0 
             ? Math.round(completedWithScore.reduce((acc, i) => acc + (i.cultural_fit || 0), 0) / completedWithScore.length)
             : 0}
-          <p class="text-2xl font-bold text-obsidian-100">{avgFit}%</p>
-          <p class="text-xs text-obsidian-400">Avg Cultural Fit</p>
+          <p class="text-2xl font-bold text-gray-900">{avgFit}%</p>
+          <p class="text-xs text-gray-500">Avg Cultural Fit</p>
         </div>
       </div>
     </Card>
@@ -150,9 +150,9 @@
     </div>
   {:else if displayInterviews.length === 0}
     <Card class="p-12 text-center">
-      <Handshake class="w-16 h-16 mx-auto text-obsidian-600 mb-4" />
-      <h3 class="text-lg font-medium text-obsidian-200 mb-2">No HR interviews yet</h3>
-      <p class="text-obsidian-400 mb-6">
+      <Handshake class="w-16 h-16 mx-auto text-gray-400 mb-4" />
+      <h3 class="text-lg font-medium text-gray-700 mb-2">No HR interviews yet</h3>
+      <p class="text-gray-500 mb-6">
         HR interviews will appear here when candidates are scheduled
       </p>
     </Card>
@@ -170,12 +170,12 @@
               </div>
               <div>
                 <div class="flex items-center gap-3 mb-1">
-                  <h3 class="font-semibold text-obsidian-100">{interview.candidate_name}</h3>
+                  <h3 class="font-semibold text-gray-900">{interview.candidate_name}</h3>
                   <StatusBadge status={status.label} variant={status.variant} />
                 </div>
-                <p class="text-sm text-obsidian-400 mb-3">{interview.candidate_email}</p>
+                <p class="text-sm text-gray-500 mb-3">{interview.candidate_email}</p>
                 
-                <div class="flex flex-wrap gap-4 text-sm text-obsidian-400">
+                <div class="flex flex-wrap gap-4 text-sm text-gray-500">
                   <span class="flex items-center gap-1">
                     <Calendar class="w-4 h-4" />
                     {formatDate(interview.scheduled_at)}
@@ -191,20 +191,20 @@
                 {#if interview.status === 'completed'}
                   <div class="mt-4 flex gap-6">
                     <div>
-                      <p class="text-xs text-obsidian-500 mb-1">Overall</p>
+                      <p class="text-xs text-gray-400 mb-1">Overall</p>
                       <p class="text-lg font-bold {interview.score >= 70 ? 'text-emerald-400' : 'text-amber-400'}">
                         {interview.score}%
                       </p>
                     </div>
                     {#if interview.cultural_fit}
                       <div>
-                        <p class="text-xs text-obsidian-500 mb-1">Cultural Fit</p>
+                        <p class="text-xs text-gray-400 mb-1">Cultural Fit</p>
                         <p class="text-lg font-bold text-purple-400">{interview.cultural_fit}%</p>
                       </div>
                     {/if}
                     {#if interview.communication}
                       <div>
-                        <p class="text-xs text-obsidian-500 mb-1">Communication</p>
+                        <p class="text-xs text-gray-400 mb-1">Communication</p>
                         <p class="text-lg font-bold text-royal-400">{interview.communication}%</p>
                       </div>
                     {/if}

@@ -18,7 +18,7 @@
     {@render children()}
   </PageShell>
 {:else}
-  <div class="min-h-screen bg-obsidian-950 flex items-center justify-center">
+  <div class="min-h-screen bg-gray-900 flex items-center justify-center">
     <div class="animate-spin rounded-full h-12 w-12 border-4 border-royal-500 border-t-transparent"></div>
   </div>
 {/if}

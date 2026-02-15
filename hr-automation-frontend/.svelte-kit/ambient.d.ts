@@ -86,6 +86,7 @@ declare module '$env/static/private' {
 	export const QT_ACCESSIBILITY: string;
 	export const GDMSESSION: string;
 	export const LESSCLOSE: string;
+	export const ENVMAN_LOAD: string;
 	export const GPG_AGENT_INFO: string;
 	export const QT_IM_MODULE: string;
 	export const npm_config_globalconfig: string;
@@ -193,6 +194,7 @@ declare module '$env/dynamic/private' {
 		QT_ACCESSIBILITY: string;
 		GDMSESSION: string;
 		LESSCLOSE: string;
+		ENVMAN_LOAD: string;
 		GPG_AGENT_INFO: string;
 		QT_IM_MODULE: string;
 		npm_config_globalconfig: string;

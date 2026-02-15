@@ -8,6 +8,7 @@
   import RecentCandidates from '$lib/components/dashboard/RecentCandidates.svelte';
   import Skeleton from '$lib/components/ui/Skeleton.svelte';
   import Button from '$lib/components/ui/Button.svelte';
+  import { goto } from '$app/navigation';
   import { Plus, Briefcase, Users, Video, CheckCircle } from 'lucide-svelte';
 
   // First fetch companies for this user/workspace
@@ -102,7 +103,7 @@
       <p class="text-gray-500 mb-6">
         To get started, please register your company details first.
       </p>
-      <Button onclick={() => window.location.href = '/company'}>
+      <Button onclick={() => goto('/company')}>
         Register Company
       </Button>
     </div>
@@ -117,7 +118,7 @@
       </h1>
       <p class="text-gray-500 mt-1">Here's what's happening with your hiring pipeline</p>
     </div>
-    <Button onclick={() => window.location.href = '/jobs/new'}>
+    <Button onclick={() => goto('/jobs/new')}>
       <Plus class="w-4 h-4" />
       Create Job
     </Button>

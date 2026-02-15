@@ -57,7 +57,7 @@
   <!-- Search & Toggle -->
   <div class="flex items-center gap-3">
     <div class="relative flex-1 max-w-md">
-      <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-obsidian-400" />
+      <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
       <Input
         type="search"
         placeholder="Search candidates..."
@@ -93,10 +93,10 @@
 
   <!-- Filter Panel -->
   {#if showFilters}
-    <div class="flex flex-wrap items-center gap-4 p-4 bg-obsidian-800/50 rounded-lg border border-obsidian-700">
+    <div class="flex flex-wrap items-center gap-4 p-4 bg-gray-100 rounded-lg border border-gray-200">
       <div class="flex items-center gap-2">
-        <Filter class="w-4 h-4 text-obsidian-400" />
-        <span class="text-sm text-obsidian-400">Filter by:</span>
+        <Filter class="w-4 h-4 text-gray-500" />
+        <span class="text-sm text-gray-500">Filter by:</span>
       </div>
 
       <div class="w-48">

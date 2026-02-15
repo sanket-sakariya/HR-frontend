@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { useCreateAptitudeTest, useGenerateAptitudeTest } from '$lib/api/queries/aptitude';
+  import { useCreateAptitudeTest } from '$lib/api/queries/aptitude';
   import Card from '$lib/components/ui/Card.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import Skeleton from '$lib/components/ui/Skeleton.svelte';
@@ -16,71 +16,55 @@
 
   const jobId = $derived($page.params.job_id);
 
-  // Mutations
+  // Mutation to create aptitude test
   const createTestMutation = useCreateAptitudeTest();
-  const generateTestMutation = useGenerateAptitudeTest();
 
   let testData = $state<any>(null);
   let isCreating = $state(false);
   let copied = $state(false);
 
-  // Use the URLs from the backend response (login_form_url, test_form_url, entry_url)
-  const entryUrl = $derived(
+  // Generate frontend URL for candidates to access the test
+  // This uses the frontend route, not the backend API URL
+  const frontendTestUrl = $derived(() => {
+    if (!testData?.data?.aptitude_test_id || !jobId) return null;
+    // Use the frontend route for candidates
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
+    return `${baseUrl}/aptitude/test/${jobId}/${testData.data.aptitude_test_id}/start`;
+  });
+
+  // Also keep the backend URL for reference
+  const backendUrl = $derived(
+    testData?.data?.test_access_url || 
+    testData?.data?.public_url ||
     testData?.data?.entry_url || 
-    testData?.data?.login_form_url
+    testData?.data?.test_url ||
+    testData?.data?.url
   );
-
-  const testFormUrl = $derived(testData?.data?.test_form_url);
-
-  // Primary URL to share with candidates - directly use entry_url from backend
-  const candidateUrl = $derived(entryUrl);
 
   async function createTest() {
     if (!jobId) return;
     isCreating = true;
     try {
-      // Step 1: Create the aptitude test
-      await $createTestMutation.mutateAsync(jobId);
-      
-      // Step 2: Generate the test forms and get URLs
-      const result = await $generateTestMutation.mutateAsync(jobId);
+      const result = await $createTestMutation.mutateAsync(jobId);
       testData = result;
-      
-      if (result?.data?.test_details) {
-        toast.success('Aptitude test created successfully', {
-          description: `${result.data.questions_count || result.data.test_details.total_questions} questions generated`
-        });
+      if (result?.data?.already_exists) {
+        toast.info('Aptitude test already exists for this job');
       } else {
-        toast.success('Aptitude test created');
+        toast.success('Aptitude test created successfully');
       }
     } catch (error: any) {
-      // If create fails because test already exists, try to get the generated test
-      if (error.message?.includes('already exists') || error.message?.includes('409')) {
-        try {
-          const result = await $generateTestMutation.mutateAsync(jobId);
-          testData = result;
-          toast.info('Aptitude test already exists', {
-            description: 'Showing existing test details'
-          });
-          return;
-        } catch (genError: any) {
-          toast.error('Failed to fetch existing test', {
-            description: genError.message
-          });
-        }
-      } else {
-        toast.error('Failed to create aptitude test', {
-          description: error.message
-        });
-      }
+      toast.error('Failed to create aptitude test', {
+        description: error.message
+      });
     } finally {
       isCreating = false;
     }
   }
 
   function copyLink() {
-    if (candidateUrl) {
-      navigator.clipboard.writeText(candidateUrl);
+    const url = frontendTestUrl();
+    if (url) {
+      navigator.clipboard.writeText(url);
       copied = true;
       toast.success('Link copied to clipboard');
       setTimeout(() => copied = false, 2000);
@@ -88,8 +72,9 @@
   }
 
   function openTest() {
-    if (candidateUrl) {
-      window.open(candidateUrl, '_blank');
+    const url = frontendTestUrl();
+    if (url) {
+      window.open(url, '_blank');
     }
   }
 </script>
@@ -144,55 +129,29 @@
           <span>This may take a moment</span>
         </div>
       </Card>
-    {:else if testData?.data?.test_details?.aptitude_test_id}
+    {:else if testData?.data?.aptitude_test_id}
       <!-- Success state - Show test link -->
       <Card class="p-8 text-center">
         <div class="w-20 h-20 rounded-2xl bg-green-900/50 flex items-center justify-center mx-auto mb-6">
           <Check class="w-10 h-10 text-green-400" />
         </div>
         <h2 class="text-2xl font-bold text-obsidian-100 mb-2">
-          {testData?.data?.test_details?.test_title || 'Aptitude Test Created'}
+          {testData?.data?.test_title || 'Aptitude Test Created'}
         </h2>
         <p class="text-obsidian-400 mb-6">
-          {testData?.message || 'Share this link with selected candidates.'}
+          {testData?.data?.already_exists ? 'Test already exists. ' : ''}
+          Share this link with selected candidates.
         </p>
 
-        <div class="grid grid-cols-3 gap-3 mb-6 text-sm">
-          <div class="bg-obsidian-800/50 rounded-lg p-3">
-            <p class="text-obsidian-500 text-xs">Questions</p>
-            <p class="text-lg font-semibold text-obsidian-100">
-              {testData.data.questions_count || testData.data.test_details.total_questions || 30}
-            </p>
-          </div>
-          <div class="bg-obsidian-800/50 rounded-lg p-3">
-            <p class="text-obsidian-500 text-xs">Duration</p>
-            <p class="text-lg font-semibold text-obsidian-100">
-              {testData.data.test_details.total_time_minutes || 45} min
-            </p>
-          </div>
-          <div class="bg-obsidian-800/50 rounded-lg p-3">
-            <p class="text-obsidian-500 text-xs">Pass Score</p>
-            <p class="text-lg font-semibold text-obsidian-100">
-              {testData.data.test_details.passing_score_percentage || 60}%
-            </p>
-          </div>
-        </div>
-
-        {#if testData.data.test_details.proctoring_settings}
-          <div class="mb-6 p-3 rounded-lg bg-obsidian-800/30 border border-obsidian-700">
-            <p class="text-xs text-obsidian-500 mb-2">Proctoring Settings</p>
-            <div class="flex flex-wrap gap-2 justify-center text-xs">
-              {#if testData.data.test_details.proctoring_settings.fullscreen_mode}
-                <span class="px-2 py-1 rounded bg-royal-900/50 text-royal-300">Fullscreen Required</span>
-              {/if}
-              {#if testData.data.test_details.proctoring_settings.tab_switch_detection}
-                <span class="px-2 py-1 rounded bg-amber-900/50 text-amber-300">
-                  Tab Switch Detection (max {testData.data.test_details.proctoring_settings.max_tab_switches_allowed || 3})
-                </span>
-              {/if}
-              {#if testData.data.test_details.proctoring_settings.copy_paste_detection}
-                <span class="px-2 py-1 rounded bg-red-900/50 text-red-300">Copy/Paste Disabled</span>
-              {/if}
+        {#if testData?.data?.total_questions}
+          <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
+            <div class="bg-obsidian-800/50 rounded-lg p-3">
+              <p class="text-obsidian-500">Questions</p>
+              <p class="text-lg font-semibold text-obsidian-100">{testData.data.total_questions}</p>
+            </div>
+            <div class="bg-obsidian-800/50 rounded-lg p-3">
+              <p class="text-obsidian-500">Test ID</p>
+              <p class="text-xs font-mono text-obsidian-300 truncate">{testData.data.aptitude_test_id}</p>
             </div>
           </div>
         {/if}
@@ -214,20 +173,11 @@
         </div>
         
         <div class="p-4 rounded-lg bg-obsidian-800/50 border border-obsidian-700">
-          <p class="text-xs text-obsidian-500 mb-2">Candidate Login URL (share this with candidates):</p>
-          <p class="font-mono text-xs text-royal-400 break-all">
-            {candidateUrl}
+          <p class="text-xs text-obsidian-500 mb-2">Candidate Test URL (share this with candidates):</p>
+          <p class="font-mono text-xs text-obsidian-400 break-all">
+            {frontendTestUrl()}
           </p>
         </div>
-
-        {#if testFormUrl && testFormUrl !== entryUrl}
-          <div class="mt-3 p-4 rounded-lg bg-obsidian-800/30 border border-obsidian-700">
-            <p class="text-xs text-obsidian-500 mb-2">Direct Test Form URL:</p>
-            <p class="font-mono text-xs text-obsidian-400 break-all">
-              {testFormUrl}
-            </p>
-          </div>
-        {/if}
 
         <div class="mt-6 p-4 rounded-lg bg-amber-900/20 border border-amber-800/50">
           <div class="flex gap-3 text-left">

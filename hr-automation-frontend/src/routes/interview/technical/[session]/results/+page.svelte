@@ -5,6 +5,7 @@
   import Button from '$lib/components/ui/Button.svelte';
   import ScoreGauge from '$lib/components/shared/ScoreGauge.svelte';
   import { Code, CheckCircle, XCircle, Download, ArrowLeft, Clock, MessageSquare, Star } from 'lucide-svelte';
+  import { toast } from 'svelte-sonner';
 
   const sessionId = $derived($page.params.session);
 
@@ -151,7 +152,7 @@
       <Button variant="outline" onclick={() => goto('/candidates')}>
         Return to Dashboard
       </Button>
-      <Button onclick={() => goto(`/interview/technical/${sessionId}/transcript`)}>
+      <Button onclick={() => toast.info('Full transcript view coming soon')}>
         <MessageSquare class="w-4 h-4 mr-2" />
         View Full Transcript
       </Button>

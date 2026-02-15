@@ -4,7 +4,7 @@ export const ROUTES = {
   register: '/register',
 
   // Dashboard
-  dashboard: '/',
+  dashboard: '/dashboard',
   company: '/company',
 
   // Jobs
@@ -22,6 +22,9 @@ export const ROUTES = {
 
   // Analytics
   analytics: '/analytics',
+
+  // Settings
+  settings: '/settings',
 
   // Interviews (Candidate-facing)
   technicalInterview: (sessionId: string) => `/interview/technical/${sessionId}`,
@@ -43,6 +46,11 @@ export const NAV_ITEMS = [
     icon: 'Briefcase'
   },
   {
+    label: 'Candidates',
+    href: ROUTES.candidates,
+    icon: 'Users'
+  },
+  {
     label: 'Analytics',
     href: ROUTES.analytics,
     icon: 'BarChart3'
@@ -51,5 +59,10 @@ export const NAV_ITEMS = [
     label: 'Company',
     href: ROUTES.company,
     icon: 'Building2'
+  },
+  {
+    label: 'Settings',
+    href: ROUTES.settings,
+    icon: 'Settings'
   }
 ] as const;

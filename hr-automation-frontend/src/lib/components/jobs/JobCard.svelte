@@ -17,7 +17,7 @@
 >
   <div class="flex items-start justify-between gap-4 mb-4">
     <div>
-      <h3 class="text-lg font-semibold text-slate-100 group-hover:text-royal-400 transition-colors">
+      <h3 class="text-lg font-semibold text-gray-900 group-hover:text-royal-400 transition-colors">
         {job.title}
       </h3>
       <div class="flex items-center gap-3 mt-2 text-sm text-slate-400">
@@ -66,12 +66,12 @@
   {#if job.requirements && job.requirements.length > 0}
     <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-800">
       {#each job.requirements.slice(0, 5) as skill}
-        <span class="px-2 py-1 rounded bg-obsidian-800 text-xs text-slate-400">
+        <span class="px-2 py-1 rounded bg-gray-100 text-xs text-slate-400">
           {skill.skill}
         </span>
       {/each}
       {#if job.requirements.length > 5}
-        <span class="px-2 py-1 rounded bg-obsidian-800 text-xs text-slate-500">
+        <span class="px-2 py-1 rounded bg-gray-100 text-xs text-slate-500">
           +{job.requirements.length - 5} more
         </span>
       {/if}

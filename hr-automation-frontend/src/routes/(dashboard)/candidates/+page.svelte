@@ -143,8 +143,8 @@
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-2xl font-bold text-obsidian-100">Candidates</h1>
-      <p class="text-obsidian-400 mt-1">
+      <h1 class="text-2xl font-bold text-gray-900">Candidates</h1>
+      <p class="text-gray-500 mt-1">
         Manage all candidates across your job openings
       </p>
     </div>
@@ -161,16 +161,16 @@
       </div>
 
       <!-- View Mode Toggle -->
-      <div class="flex items-center bg-obsidian-800 rounded-lg p-1 border border-obsidian-700">
+      <div class="flex items-center bg-gray-100 rounded-lg p-1 border border-gray-200">
         <button
-          class="p-2 rounded-md transition-colors {viewMode === 'table' ? 'bg-royal-600 text-white' : 'text-obsidian-400 hover:text-obsidian-200'}"
+          class="p-2 rounded-md transition-colors {viewMode === 'table' ? 'bg-royal-600 text-white' : 'text-gray-500 hover:text-gray-700'}"
           onclick={() => viewMode = 'table'}
           aria-label="Table view"
         >
           <List class="w-4 h-4" />
         </button>
         <button
-          class="p-2 rounded-md transition-colors {viewMode === 'pipeline' ? 'bg-royal-600 text-white' : 'text-obsidian-400 hover:text-obsidian-200'}"
+          class="p-2 rounded-md transition-colors {viewMode === 'pipeline' ? 'bg-royal-600 text-white' : 'text-gray-500 hover:text-gray-700'}"
           onclick={() => viewMode = 'pipeline'}
           aria-label="Pipeline view"
         >
@@ -188,8 +188,8 @@
   <!-- Stats -->
   <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
     {#each [
-      { label: 'Total', count: allCandidates.length, color: 'obsidian' },
-      { label: 'Applied', count: allCandidates.filter((c: any) => c.status === 'applied').length, color: 'obsidian' },
+      { label: 'Total', count: allCandidates.length, color: 'gray' },
+      { label: 'Applied', count: allCandidates.filter((c: any) => c.status === 'applied').length, color: 'gray' },
       { label: 'Screening', count: allCandidates.filter((c: any) => c.status === 'resume_screened').length, color: 'royal' },
       { label: 'Aptitude', count: allCandidates.filter((c: any) => c.status?.includes('aptitude')).length, color: 'blue' },
       { label: 'Technical', count: allCandidates.filter((c: any) => c.status?.includes('technical')).length, color: 'amber' },
@@ -197,9 +197,9 @@
       { label: 'Offered', count: allCandidates.filter((c: any) => c.status === 'hire_recommended').length, color: 'emerald' },
       { label: 'Rejected', count: allCandidates.filter((c: any) => c.status === 'rejected').length, color: 'red' }
     ] as stat}
-      <div class="bg-obsidian-800/50 border border-obsidian-700 rounded-lg p-3 text-center">
-        <p class="text-2xl font-bold text-obsidian-100">{stat.count}</p>
-        <p class="text-xs text-obsidian-400">{stat.label}</p>
+      <div class="bg-gray-100 border border-gray-200 rounded-lg p-3 text-center">
+        <p class="text-2xl font-bold text-gray-900">{stat.count}</p>
+        <p class="text-xs text-gray-500">{stat.label}</p>
       </div>
     {/each}
   </div>
@@ -219,9 +219,9 @@
   {#if !selectedJobId}
     <!-- No job selected state -->
     <div class="text-center py-12">
-      <Briefcase class="w-16 h-16 mx-auto text-obsidian-600 mb-4" />
-      <h3 class="text-lg font-medium text-obsidian-200 mb-2">Select a Job</h3>
-      <p class="text-obsidian-400 mb-6">
+      <Briefcase class="w-16 h-16 mx-auto text-gray-400 mb-4" />
+      <h3 class="text-lg font-medium text-gray-700 mb-2">Select a Job</h3>
+      <p class="text-gray-500 mb-6">
         Please select a job from the dropdown above to view candidates
       </p>
       {#if $jobsQuery.data?.data?.length === 0}
@@ -229,7 +229,7 @@
       {/if}
     </div>
   {:else if viewMode === 'table'}
-    <div class="bg-obsidian-800/30 border border-obsidian-700 rounded-lg">
+    <div class="bg-gray-50 border border-gray-200 rounded-lg">
       <CandidateTable
         candidates={filteredCandidates()}
         loading={$candidatesQuery.isLoading}
@@ -251,9 +251,9 @@
   <!-- Empty State for when job is selected but no candidates -->
   {#if selectedJobId && !$candidatesQuery.isLoading && filteredCandidates().length === 0 && !search && !status}
     <div class="text-center py-12">
-      <Users class="w-16 h-16 mx-auto text-obsidian-600 mb-4" />
-      <h3 class="text-lg font-medium text-obsidian-200 mb-2">No candidates yet</h3>
-      <p class="text-obsidian-400 mb-6">
+      <Users class="w-16 h-16 mx-auto text-gray-400 mb-4" />
+      <h3 class="text-lg font-medium text-gray-700 mb-2">No candidates yet</h3>
+      <p class="text-gray-500 mb-6">
         Candidates will appear here when they apply for this job
       </p>
       <Button href="/jobs">View Job Openings</Button>

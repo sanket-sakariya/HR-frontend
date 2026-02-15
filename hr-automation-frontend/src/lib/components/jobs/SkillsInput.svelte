@@ -88,15 +88,15 @@
   {#if skills.length > 0}
     <div class="flex flex-wrap gap-2">
       {#each skills as skill, index}
-        <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-obsidian-800 border border-slate-700">
+        <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 border border-slate-700">
           <button
             type="button"
             onclick={() => toggleRequired(index)}
             class={`w-2 h-2 rounded-full ${skill.required ? 'bg-success' : 'bg-slate-500'}`}
             title={skill.required ? 'Required' : 'Optional'}
           ></button>
-          <span class="text-sm text-slate-200">{skill.skill}</span>
-          <span class="text-xs text-slate-500 px-1.5 py-0.5 rounded bg-slate-800">
+          <span class="text-sm text-gray-800">{skill.skill}</span>
+          <span class="text-xs text-slate-500 px-1.5 py-0.5 rounded bg-gray-100">
             {skill.level}
           </span>
           <button
@@ -113,7 +113,7 @@
       Click the dot to toggle required/optional status
     </p>
   {:else}
-    <p class="text-sm text-slate-500 text-center py-4 bg-obsidian-800/50 rounded-lg border border-dashed border-slate-700">
+    <p class="text-sm text-slate-500 text-center py-4 bg-gray-100 rounded-lg border border-dashed border-slate-700">
       No skills added yet. Add skills that candidates should have.
     </p>
   {/if}

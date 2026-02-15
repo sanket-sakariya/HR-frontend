@@ -89,9 +89,9 @@
     <div>
       <div class="flex items-center gap-3 mb-2">
         <Code class="w-6 h-6 text-amber-400" />
-        <h1 class="text-2xl font-bold text-obsidian-100">Technical Interviews</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Technical Interviews</h1>
       </div>
-      <p class="text-obsidian-400">
+      <p class="text-gray-500">
         AI-powered technical interviews for {job?.title || 'this job'}
       </p>
     </div>
@@ -105,8 +105,8 @@
           <Code class="w-5 h-5 text-amber-400" />
         </div>
         <div>
-          <p class="text-2xl font-bold text-obsidian-100">{displayInterviews.length}</p>
-          <p class="text-xs text-obsidian-400">Total Interviews</p>
+          <p class="text-2xl font-bold text-gray-900">{displayInterviews.length}</p>
+          <p class="text-xs text-gray-500">Total Interviews</p>
         </div>
       </div>
     </Card>
@@ -116,10 +116,10 @@
           <Calendar class="w-5 h-5 text-blue-400" />
         </div>
         <div>
-          <p class="text-2xl font-bold text-obsidian-100">
+          <p class="text-2xl font-bold text-gray-900">
             {displayInterviews.filter(i => i.status === 'scheduled').length}
           </p>
-          <p class="text-xs text-obsidian-400">Scheduled</p>
+          <p class="text-xs text-gray-500">Scheduled</p>
         </div>
       </div>
     </Card>
@@ -129,10 +129,10 @@
           <CheckCircle class="w-5 h-5 text-emerald-400" />
         </div>
         <div>
-          <p class="text-2xl font-bold text-obsidian-100">
+          <p class="text-2xl font-bold text-gray-900">
             {displayInterviews.filter(i => i.status === 'completed').length}
           </p>
-          <p class="text-xs text-obsidian-400">Completed</p>
+          <p class="text-xs text-gray-500">Completed</p>
         </div>
       </div>
     </Card>
@@ -142,8 +142,8 @@
           <Users class="w-5 h-5 text-royal-400" />
         </div>
         <div>
-          <p class="text-2xl font-bold text-obsidian-100">{avgScore()}%</p>
-          <p class="text-xs text-obsidian-400">Avg Score</p>
+          <p class="text-2xl font-bold text-gray-900">{avgScore()}%</p>
+          <p class="text-xs text-gray-500">Avg Score</p>
         </div>
       </div>
     </Card>
@@ -158,9 +158,9 @@
     </div>
   {:else if displayInterviews.length === 0}
     <Card class="p-12 text-center">
-      <Code class="w-16 h-16 mx-auto text-obsidian-600 mb-4" />
-      <h3 class="text-lg font-medium text-obsidian-200 mb-2">No technical interviews yet</h3>
-      <p class="text-obsidian-400 mb-6">
+      <Code class="w-16 h-16 mx-auto text-gray-400 mb-4" />
+      <h3 class="text-lg font-medium text-gray-700 mb-2">No technical interviews yet</h3>
+      <p class="text-gray-500 mb-6">
         Technical interviews will appear here when candidates are scheduled
       </p>
     </Card>
@@ -169,44 +169,44 @@
       <div class="overflow-x-auto">
         <table class="w-full">
           <thead>
-            <tr class="border-b border-obsidian-700">
-              <th class="text-left py-3 px-4 text-xs font-medium text-obsidian-400 uppercase tracking-wider">
+            <tr class="border-b border-gray-200">
+              <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Candidate
               </th>
-              <th class="text-left py-3 px-4 text-xs font-medium text-obsidian-400 uppercase tracking-wider">
+              <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
-              <th class="text-left py-3 px-4 text-xs font-medium text-obsidian-400 uppercase tracking-wider">
+              <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Scheduled
               </th>
-              <th class="text-left py-3 px-4 text-xs font-medium text-obsidian-400 uppercase tracking-wider">
+              <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Duration
               </th>
-              <th class="text-left py-3 px-4 text-xs font-medium text-obsidian-400 uppercase tracking-wider">
+              <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Score
               </th>
-              <th class="text-right py-3 px-4 text-xs font-medium text-obsidian-400 uppercase tracking-wider">
+              <th class="text-right py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-obsidian-700/50">
+          <tbody class="divide-y divide-gray-200">
             {#each displayInterviews as interview}
               {@const status = statusConfig[interview.status] || statusConfig.scheduled}
-              <tr class="hover:bg-obsidian-800/50 transition-colors">
+              <tr class="hover:bg-gray-50 transition-colors">
                 <td class="py-4 px-4">
                   <div>
-                    <p class="font-medium text-obsidian-100">{interview.candidate_name}</p>
-                    <p class="text-sm text-obsidian-400">{interview.candidate_email}</p>
+                    <p class="font-medium text-gray-900">{interview.candidate_name}</p>
+                    <p class="text-sm text-gray-500">{interview.candidate_email}</p>
                   </div>
                 </td>
                 <td class="py-4 px-4">
                   <StatusBadge status={status.label} variant={status.variant} />
                 </td>
-                <td class="py-4 px-4 text-obsidian-300">
+                <td class="py-4 px-4 text-gray-600">
                   {formatDate(interview.scheduled_at)}
                 </td>
-                <td class="py-4 px-4 text-obsidian-300">
+                <td class="py-4 px-4 text-gray-600">
                   {#if interview.duration}
                     {interview.duration} min
                   {:else}
@@ -219,7 +219,7 @@
                       {interview.score}%
                     </span>
                   {:else}
-                    <span class="text-obsidian-500">-</span>
+                    <span class="text-gray-400">-</span>
                   {/if}
                 </td>
                 <td class="py-4 px-4 text-right">

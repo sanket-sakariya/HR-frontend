@@ -110,8 +110,8 @@
 
 <div class="space-y-6">
   <div>
-    <h1 class="text-2xl font-bold text-obsidian-100">Settings</h1>
-    <p class="text-obsidian-400 mt-1">Manage your account and application preferences</p>
+    <h1 class="text-2xl font-bold text-gray-900">Settings</h1>
+    <p class="text-gray-500 mt-1">Manage your account and application preferences</p>
   </div>
 
   <div class="flex flex-col lg:flex-row gap-6">
@@ -123,7 +123,7 @@
             <button
               class="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left {activeTab === tab.id
                 ? 'bg-royal-600 text-white'
-                : 'text-obsidian-300 hover:bg-obsidian-700'}"
+                : 'text-gray-600 hover:bg-gray-100'}"
               onclick={() => activeTab = tab.id}
             >
               <svelte:component this={tab.icon} class="w-5 h-5" />
@@ -138,7 +138,7 @@
     <div class="flex-1">
       {#if activeTab === 'general'}
         <Card class="p-6">
-          <h2 class="text-lg font-semibold text-obsidian-100 mb-6">General Settings</h2>
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">General Settings</h2>
           
           <div class="space-y-6 max-w-md">
             <div>
@@ -176,16 +176,16 @@
         </Card>
       {:else if activeTab === 'notifications'}
         <Card class="p-6">
-          <h2 class="text-lg font-semibold text-obsidian-100 mb-6">Notification Preferences</h2>
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">Notification Preferences</h2>
           
           <div class="space-y-6">
-            <div class="flex items-center justify-between py-3 border-b border-obsidian-700">
+            <div class="flex items-center justify-between py-3 border-b border-gray-200">
               <div>
-                <p class="font-medium text-obsidian-100">Email Notifications</p>
-                <p class="text-sm text-obsidian-400">Receive notifications via email</p>
+                <p class="font-medium text-gray-900">Email Notifications</p>
+                <p class="text-sm text-gray-500">Receive notifications via email</p>
               </div>
               <button
-                class="relative w-12 h-6 rounded-full transition-colors {emailNotifications ? 'bg-royal-600' : 'bg-obsidian-700'}"
+                class="relative w-12 h-6 rounded-full transition-colors {emailNotifications ? 'bg-royal-600' : 'bg-gray-200'}"
                 onclick={() => emailNotifications = !emailNotifications}
               >
                 <span
@@ -194,13 +194,13 @@
               </button>
             </div>
 
-            <div class="flex items-center justify-between py-3 border-b border-obsidian-700">
+            <div class="flex items-center justify-between py-3 border-b border-gray-200">
               <div>
-                <p class="font-medium text-obsidian-100">New Candidate Alerts</p>
-                <p class="text-sm text-obsidian-400">Get notified when new candidates apply</p>
+                <p class="font-medium text-gray-900">New Candidate Alerts</p>
+                <p class="text-sm text-gray-500">Get notified when new candidates apply</p>
               </div>
               <button
-                class="relative w-12 h-6 rounded-full transition-colors {newCandidateAlert ? 'bg-royal-600' : 'bg-obsidian-700'}"
+                class="relative w-12 h-6 rounded-full transition-colors {newCandidateAlert ? 'bg-royal-600' : 'bg-gray-200'}"
                 onclick={() => newCandidateAlert = !newCandidateAlert}
               >
                 <span
@@ -209,13 +209,13 @@
               </button>
             </div>
 
-            <div class="flex items-center justify-between py-3 border-b border-obsidian-700">
+            <div class="flex items-center justify-between py-3 border-b border-gray-200">
               <div>
-                <p class="font-medium text-obsidian-100">Interview Complete Alerts</p>
-                <p class="text-sm text-obsidian-400">Get notified when interviews are completed</p>
+                <p class="font-medium text-gray-900">Interview Complete Alerts</p>
+                <p class="text-sm text-gray-500">Get notified when interviews are completed</p>
               </div>
               <button
-                class="relative w-12 h-6 rounded-full transition-colors {interviewCompleteAlert ? 'bg-royal-600' : 'bg-obsidian-700'}"
+                class="relative w-12 h-6 rounded-full transition-colors {interviewCompleteAlert ? 'bg-royal-600' : 'bg-gray-200'}"
                 onclick={() => interviewCompleteAlert = !interviewCompleteAlert}
               >
                 <span
@@ -226,11 +226,11 @@
 
             <div class="flex items-center justify-between py-3">
               <div>
-                <p class="font-medium text-obsidian-100">Daily Digest</p>
-                <p class="text-sm text-obsidian-400">Receive a daily summary of activity</p>
+                <p class="font-medium text-gray-900">Daily Digest</p>
+                <p class="text-sm text-gray-500">Receive a daily summary of activity</p>
               </div>
               <button
-                class="relative w-12 h-6 rounded-full transition-colors {dailyDigest ? 'bg-royal-600' : 'bg-obsidian-700'}"
+                class="relative w-12 h-6 rounded-full transition-colors {dailyDigest ? 'bg-royal-600' : 'bg-gray-200'}"
                 onclick={() => dailyDigest = !dailyDigest}
               >
                 <span
@@ -248,7 +248,7 @@
       {:else if activeTab === 'security'}
         <div class="space-y-6">
           <Card class="p-6">
-            <h2 class="text-lg font-semibold text-obsidian-100 mb-6">Change Password</h2>
+            <h2 class="text-lg font-semibold text-gray-900 mb-6">Change Password</h2>
             
             <div class="space-y-4 max-w-md">
               <div>
@@ -291,8 +291,8 @@
           <Card class="p-6">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="text-lg font-semibold text-obsidian-100">Two-Factor Authentication</h2>
-                <p class="text-sm text-obsidian-400 mt-1">Add an extra layer of security to your account</p>
+                <h2 class="text-lg font-semibold text-gray-900">Two-Factor Authentication</h2>
+                <p class="text-sm text-gray-500 mt-1">Add an extra layer of security to your account</p>
               </div>
               <Button 
                 variant={twoFactorEnabled ? 'destructive' : 'outline'}
@@ -306,7 +306,7 @@
 
           <Card class="p-6 border-red-900/50">
             <h2 class="text-lg font-semibold text-red-400 mb-2">Danger Zone</h2>
-            <p class="text-sm text-obsidian-400 mb-4">
+            <p class="text-sm text-gray-500 mb-4">
               Permanently delete your account and all associated data
             </p>
             <Button variant="destructive">
@@ -317,12 +317,12 @@
         </div>
       {:else if activeTab === 'api'}
         <Card class="p-6">
-          <h2 class="text-lg font-semibold text-obsidian-100 mb-6">API Keys</h2>
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">API Keys</h2>
           
           <div class="space-y-6">
-            <div class="bg-obsidian-800/50 rounded-lg p-4">
+            <div class="bg-gray-100 rounded-lg p-4">
               <div class="flex items-center justify-between mb-2">
-                <span class="text-sm font-medium text-obsidian-200">Workspace ID</span>
+                <span class="text-sm font-medium text-gray-700">Workspace ID</span>
                 <button
                   class="text-xs text-royal-400 hover:text-royal-300"
                   onclick={() => {
@@ -333,14 +333,14 @@
                   Copy
                 </button>
               </div>
-              <code class="text-sm text-obsidian-400 font-mono break-all">
+              <code class="text-sm text-gray-500 font-mono break-all">
                 {authStore.workspaceId || 'Not set'}
               </code>
             </div>
 
-            <div class="bg-obsidian-800/50 rounded-lg p-4">
+            <div class="bg-gray-100 rounded-lg p-4">
               <div class="flex items-center justify-between mb-2">
-                <span class="text-sm font-medium text-obsidian-200">API Key</span>
+                <span class="text-sm font-medium text-gray-700">API Key</span>
                 <button
                   class="text-xs text-royal-400 hover:text-royal-300"
                   onclick={() => {
@@ -350,7 +350,7 @@
                   Copy
                 </button>
               </div>
-              <code class="text-sm text-obsidian-400 font-mono">
+              <code class="text-sm text-gray-500 font-mono">
                 ••••••••••••••••••••••••••••••••
               </code>
             </div>

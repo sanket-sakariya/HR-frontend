@@ -192,8 +192,8 @@
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-2xl font-bold text-obsidian-100">Company Profile</h1>
-      <p class="text-obsidian-400 mt-1">Manage your company information and settings</p>
+      <h1 class="text-2xl font-bold text-gray-900">Company Profile</h1>
+      <p class="text-gray-500 mt-1">Manage your company information and settings</p>
     </div>
 
     {#if !isEditing}
@@ -271,7 +271,7 @@
         <div class="grid lg:grid-cols-2 gap-6">
           <!-- Contact Section -->
           <Card class="p-6">
-            <h3 class="text-lg font-semibold text-obsidian-100 mb-4">Contact Information</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
             <div class="space-y-4">
               <div>
                 <Label for="email" required>Email</Label>
@@ -305,7 +305,7 @@
 
           <!-- Address Section -->
           <Card class="p-6">
-            <h3 class="text-lg font-semibold text-obsidian-100 mb-4">Address</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Address</h3>
             <div class="space-y-4">
               <div>
                 <Label for="address">Street Address</Label>
@@ -357,9 +357,9 @@
       </div>
     {:else}
       <Card class="p-8 text-center">
-        <Building2 class="w-12 h-12 mx-auto text-obsidian-500 mb-4" />
-        <h3 class="text-lg font-medium text-obsidian-200 mb-2">No Company Profile</h3>
-        <p class="text-obsidian-400 mb-4">Create your company profile to get started</p>
+        <Building2 class="w-12 h-12 mx-auto text-gray-400 mb-4" />
+        <h3 class="text-lg font-medium text-gray-700 mb-2">No Company Profile</h3>
+        <p class="text-gray-500 mb-4">Create your company profile to get started</p>
         <Button onclick={startEditing}>
           <Edit class="w-4 h-4 mr-2" />
           Create Company Profile
@@ -391,10 +391,10 @@
               class="text-xl font-bold mb-2"
             />
           {:else}
-            <h2 class="text-2xl font-bold text-obsidian-100">{company?.company_name || 'Company Name'}</h2>
+            <h2 class="text-2xl font-bold text-gray-900">{company?.company_name || 'Company Name'}</h2>
           {/if}
           
-          <div class="flex flex-wrap gap-4 mt-3 text-sm text-obsidian-400">
+          <div class="flex flex-wrap gap-4 mt-3 text-sm text-gray-500">
             {#if company?.industry || isEditing}
               <span class="flex items-center gap-1">
                 <Building2 class="w-4 h-4" />
@@ -423,7 +423,7 @@
     <div class="grid lg:grid-cols-2 gap-6">
       <!-- About Section -->
       <Card class="p-6">
-        <h3 class="text-lg font-semibold text-obsidian-100 mb-4">Company Details</h3>
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Company Details</h3>
         {#if isEditing}
           <div class="space-y-4">
             <div>
@@ -447,12 +447,12 @@
         {:else}
           <div class="space-y-3">
             <div class="flex justify-between">
-              <span class="text-obsidian-400">Industry</span>
-              <span class="text-obsidian-200">{company?.industry || '-'}</span>
+              <span class="text-gray-500">Industry</span>
+              <span class="text-gray-700">{company?.industry || '-'}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-obsidian-400">Company Size</span>
-              <span class="text-obsidian-200">{company?.size || '-'}</span>
+              <span class="text-gray-500">Company Size</span>
+              <span class="text-gray-700">{company?.size || '-'}</span>
             </div>
           </div>
         {/if}
@@ -460,7 +460,7 @@
 
       <!-- Contact Section -->
       <Card class="p-6">
-        <h3 class="text-lg font-semibold text-obsidian-100 mb-4">Contact Information</h3>
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
         {#if isEditing}
           <div class="space-y-4">
             <div>
@@ -495,7 +495,7 @@
           <div class="space-y-4">
             {#if company?.website}
               <div class="flex items-center gap-3">
-                <Globe class="w-5 h-5 text-obsidian-500" />
+                <Globe class="w-5 h-5 text-gray-400" />
                 <a href={company.website} target="_blank" rel="noopener" class="text-royal-400 hover:underline">
                   {company.website}
                 </a>
@@ -503,22 +503,22 @@
             {/if}
             {#if company?.email}
               <div class="flex items-center gap-3">
-                <Mail class="w-5 h-5 text-obsidian-500" />
-                <a href="mailto:{company.email}" class="text-obsidian-300 hover:text-royal-400">
+                <Mail class="w-5 h-5 text-gray-400" />
+                <a href="mailto:{company.email}" class="text-gray-600 hover:text-royal-400">
                   {company.email}
                 </a>
               </div>
             {/if}
             {#if company?.phone}
               <div class="flex items-center gap-3">
-                <Phone class="w-5 h-5 text-obsidian-500" />
-                <a href="tel:{company.phone}" class="text-obsidian-300 hover:text-royal-400">
+                <Phone class="w-5 h-5 text-gray-400" />
+                <a href="tel:{company.phone}" class="text-gray-600 hover:text-royal-400">
                   {company.phone}
                 </a>
               </div>
             {/if}
             {#if !company?.website && !company?.email && !company?.phone}
-              <p class="text-obsidian-500">No contact information provided.</p>
+              <p class="text-gray-400">No contact information provided.</p>
             {/if}
           </div>
         {/if}
@@ -526,7 +526,7 @@
 
       <!-- Address Section -->
       <Card class="p-6 lg:col-span-2">
-        <h3 class="text-lg font-semibold text-obsidian-100 mb-4">Address</h3>
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Address</h3>
         {#if isEditing}
           <div class="grid md:grid-cols-2 gap-4">
             <div>
@@ -572,8 +572,8 @@
           </div>
         {:else}
           <div class="flex items-start gap-3">
-            <MapPin class="w-5 h-5 text-obsidian-500 mt-0.5" />
-            <div class="text-obsidian-300">
+            <MapPin class="w-5 h-5 text-gray-400 mt-0.5" />
+            <div class="text-gray-600">
               {#if company?.address?.street}<p>{company.address.street}</p>{/if}
               <p>
                 {company?.address?.city || ''}{company?.address?.city && company?.address?.state ? ', ' : ''}{company?.address?.state || ''}
@@ -581,7 +581,7 @@
               </p>
               {#if company?.address?.country}<p>{company.address.country}</p>{/if}
               {#if !company?.address?.street && !company?.address?.city && !company?.address?.country}
-                <p class="text-obsidian-500">No address provided.</p>
+                <p class="text-gray-400">No address provided.</p>
               {/if}
             </div>
           </div>

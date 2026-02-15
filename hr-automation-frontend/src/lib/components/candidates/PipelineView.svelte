@@ -26,7 +26,7 @@
   }
 
   const stages: PipelineStage[] = [
-    { id: 'applied', label: 'Applied', icon: Users, color: 'obsidian' },
+    { id: 'applied', label: 'Applied', icon: Users, color: 'gray' },
     { id: 'resume_screened', label: 'Resume Screened', icon: FileSearch, color: 'royal' },
     { id: 'aptitude_eligible', label: 'Aptitude', icon: Brain, color: 'blue' },
     { id: 'technical_eligible', label: 'Technical', icon: Code, color: 'amber' },
@@ -49,7 +49,7 @@
   );
 
   const colorClasses: Record<string, { bg: string; border: string; text: string }> = {
-    obsidian: { bg: 'bg-obsidian-700', border: 'border-obsidian-600', text: 'text-obsidian-300' },
+    gray: { bg: 'bg-gray-200', border: 'border-gray-300', text: 'text-gray-600' },
     royal: { bg: 'bg-royal-900/50', border: 'border-royal-700', text: 'text-royal-300' },
     blue: { bg: 'bg-blue-900/50', border: 'border-blue-700', text: 'text-blue-300' },
     amber: { bg: 'bg-amber-900/50', border: 'border-amber-700', text: 'text-amber-300' },
@@ -93,7 +93,7 @@
       aria-label="{stage.label} stage"
     >
       <!-- Stage Header -->
-      <div class="p-3 border-b border-obsidian-700/50">
+      <div class="p-3 border-b border-gray-200">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <svelte:component this={stage.icon} class={cn('w-4 h-4', stageColor.text)} />
@@ -113,18 +113,18 @@
       <div class="p-2 space-y-2 min-h-[200px] max-h-[600px] overflow-y-auto">
         {#if loading}
           {#each Array(2) as _}
-            <div class="bg-obsidian-800 rounded-lg p-4 animate-pulse">
+            <div class="bg-gray-100 rounded-lg p-4 animate-pulse">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-obsidian-700"></div>
+                <div class="w-10 h-10 rounded-full bg-gray-200"></div>
                 <div class="flex-1 space-y-2">
-                  <div class="w-24 h-4 bg-obsidian-700 rounded"></div>
-                  <div class="w-32 h-3 bg-obsidian-700 rounded"></div>
+                  <div class="w-24 h-4 bg-gray-200 rounded"></div>
+                  <div class="w-32 h-3 bg-gray-200 rounded"></div>
                 </div>
               </div>
             </div>
           {/each}
         {:else if stageCandidates.length === 0}
-          <div class="flex flex-col items-center justify-center h-32 text-obsidian-500 text-sm">
+          <div class="flex flex-col items-center justify-center h-32 text-gray-400 text-sm">
             <Users class="w-8 h-8 mb-2 opacity-50" />
             <p>No candidates</p>
           </div>
@@ -139,7 +139,7 @@
               <CandidateCard
                 {candidate}
                 showActions={false}
-                class="!bg-obsidian-800/80 !p-3"
+                class="!bg-gray-100 !p-3"
                 on:view={(e) => dispatch('view', e.detail)}
               />
             </div>

@@ -7,6 +7,7 @@
   import Input from '$lib/components/ui/Input.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import Skeleton from '$lib/components/ui/Skeleton.svelte';
+  import { goto } from '$app/navigation';
   import { Plus, Search, Briefcase } from 'lucide-svelte';
 
   let searchQuery = $state('');
@@ -60,10 +61,10 @@
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-slate-100">Job Requirements</h1>
-      <p class="text-slate-400 mt-1">Manage your job postings and requirements</p>
+      <h1 class="text-2xl font-bold text-gray-900">Job Requirements</h1>
+      <p class="text-gray-500 mt-1">Manage your job postings and requirements</p>
     </div>
-    <Button onclick={() => window.location.href = '/jobs/new'}>
+    <Button onclick={() => goto('/jobs/new')}>
       <Plus class="w-4 h-4" />
       Create Job
     </Button>
@@ -72,7 +73,7 @@
   <!-- Filters -->
   <div class="flex flex-col sm:flex-row gap-4">
     <div class="relative flex-1 max-w-md">
-      <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+      <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
       <Input
         bind:value={searchQuery}
         placeholder="Search jobs..."
@@ -96,15 +97,15 @@
     </div>
   {:else if filteredJobs.length === 0}
     <div class="card-executive p-12 text-center">
-      <div class="inline-flex items-center justify-center p-4 rounded-full bg-slate-800 mb-4">
-        <Briefcase class="w-8 h-8 text-slate-500" />
+      <div class="inline-flex items-center justify-center p-4 rounded-full bg-gray-100 mb-4">
+        <Briefcase class="w-8 h-8 text-gray-400" />
       </div>
-      <h3 class="text-lg font-medium text-slate-200 mb-2">No jobs found</h3>
-      <p class="text-slate-400 mb-6">
+      <h3 class="text-lg font-medium text-gray-800 mb-2">No jobs found</h3>
+      <p class="text-gray-500 mb-6">
         {searchQuery ? 'Try adjusting your search criteria' : 'Create your first job requirement to get started'}
       </p>
       {#if !searchQuery}
-        <Button onclick={() => window.location.href = '/jobs/new'}>
+        <Button onclick={() => goto('/jobs/new')}>
           <Plus class="w-4 h-4" />
           Create Job
         </Button>

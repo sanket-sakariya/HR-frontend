@@ -30,7 +30,7 @@
     ExternalLink
   } from 'lucide-svelte';
 
-  const jobId = $page.params.job_id;
+  const jobId = $derived($page.params.job_id);
 
   const jobQuery = useJobRequirement(jobId);
   const candidatesQuery = useCandidates({ job_requirement_id: jobId });
@@ -423,7 +423,7 @@
                     <div class="px-4 py-3 border-b border-gray-100">
                       <div class="flex items-center justify-between">
                         <h5 class="text-sm font-semibold text-gray-800">{stage.label}</h5>
-                        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-gray-700">{stage.candidates.length}</span>
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">{stage.candidates.length}</span>
                       </div>
                       {#if stage.candidates.length > 0}
                         <div class="flex gap-3 mt-2 text-xs">

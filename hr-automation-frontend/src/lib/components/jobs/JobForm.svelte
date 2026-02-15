@@ -136,7 +136,7 @@
 <form onsubmit={handleSubmit} class="space-y-8 max-w-4xl">
   <!-- Basic Info -->
   <div class="card-executive p-6 space-y-4">
-    <h3 class="text-lg font-semibold text-slate-100">Basic Information</h3>
+    <h3 class="text-lg font-semibold text-gray-900">Basic Information</h3>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="md:col-span-2">
@@ -191,7 +191,7 @@
 
   <!-- Skills Requirements -->
   <div class="card-executive p-6 space-y-4">
-    <h3 class="text-lg font-semibold text-slate-100">Skill Requirements</h3>
+    <h3 class="text-lg font-semibold text-gray-900">Skill Requirements</h3>
     <p class="text-sm text-slate-400">Add the skills and technologies required for this role</p>
     <SkillsInput 
       bind:skills={formData.requirements}
@@ -200,7 +200,7 @@
 
   <!-- Experience -->
   <div class="card-executive p-6 space-y-4">
-    <h3 class="text-lg font-semibold text-slate-100">Experience Requirements</h3>
+    <h3 class="text-lg font-semibold text-gray-900">Experience Requirements</h3>
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
@@ -234,7 +234,7 @@
 
   <!-- Salary & Benefits -->
   <div class="card-executive p-6 space-y-4">
-    <h3 class="text-lg font-semibold text-slate-100">Compensation</h3>
+    <h3 class="text-lg font-semibold text-gray-900">Compensation</h3>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
@@ -272,7 +272,7 @@
       {#if formData.benefits.length > 0}
         <div class="flex flex-wrap gap-2">
           {#each formData.benefits as benefit, index}
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-obsidian-800 border border-slate-700 text-sm text-slate-300">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 border border-slate-700 text-sm text-slate-300">
               {benefit}
               <button
                 type="button"

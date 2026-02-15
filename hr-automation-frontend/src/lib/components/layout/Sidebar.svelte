@@ -12,6 +12,7 @@
     Users,
     BarChart3,
     Building2,
+    Settings,
     LogOut,
     ChevronLeft,
     Sparkles
@@ -22,7 +23,8 @@
     Briefcase,
     Users,
     BarChart3,
-    Building2
+    Building2,
+    Settings
   };
 
   const logoutMutation = useLogout();
@@ -91,8 +93,8 @@
       <ul class="space-y-1">
         {#each NAV_ITEMS as item}
           {@const Icon = iconMap[item.icon]}
-          {@const isActive = $page.url.pathname === item.href || 
-            (item.href !== '/' && $page.url.pathname.startsWith(item.href))}
+          {@const isActive = $page.url.pathname === item.href ||
+            (item.href !== '/dashboard' && $page.url.pathname.startsWith(item.href))}
           
           <li>
             <a

@@ -58,7 +58,7 @@
       <div class="inline-flex items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-royal-600 to-royal-500 mb-4 shadow-lg shadow-royal-500/20">
         <Sparkles class="w-8 h-8 text-white" />
       </div>
-      <h1 class="text-3xl font-bold text-slate-100 mb-2">Welcome Back</h1>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
       <p class="text-slate-400">Sign in to your company account</p>
     </div>
 
