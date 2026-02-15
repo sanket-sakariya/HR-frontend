@@ -451,9 +451,8 @@
                     <!-- Candidate list -->
                     <div class="p-3 space-y-1.5 max-h-72 overflow-y-auto">
                       {#each stage.candidates as { candidate, stageStatus } (candidate.candidate_id)}
-                        <a
-                          href="/candidates/{candidate.candidate_id}"
-                          class="flex items-center gap-2.5 p-2 rounded-md transition-colors hover:bg-white/80 {stageStatus === 'passed' ? 'bg-emerald-50/50' : stageStatus === 'failed' ? 'bg-red-50/50' : 'bg-purple-50/50'}"
+                        <div
+                          class="flex items-center gap-2.5 p-2 rounded-md transition-colors {stageStatus === 'passed' ? 'bg-emerald-50/50' : stageStatus === 'failed' ? 'bg-red-50/50' : 'bg-purple-50/50'}"
                         >
                           <span class="flex-shrink-0 w-2 h-2 rounded-full {stageStatus === 'passed' ? 'bg-emerald-500' : stageStatus === 'failed' ? 'bg-red-500' : 'bg-purple-500'}"></span>
                           <div class="min-w-0 flex-1">
@@ -464,7 +463,7 @@
                           <span class="flex-shrink-0 text-[10px] font-medium uppercase tracking-wide {stageStatus === 'passed' ? 'text-emerald-600' : stageStatus === 'failed' ? 'text-red-600' : 'text-purple-600'}">
                             {stageStatus === 'passed' ? '✓ Passed' : stageStatus === 'failed' ? '✗ Failed' : '● Active'}
                           </span>
-                        </a>
+                        </div>
                       {/each}
                       {#if stage.candidates.length === 0}
                         <p class="text-xs text-gray-400 text-center py-4">No candidates yet</p>

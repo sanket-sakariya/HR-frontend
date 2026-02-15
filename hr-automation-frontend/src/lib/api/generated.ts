@@ -255,7 +255,7 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          job_requirement_id?: string;
+          job_requirement_id: string;
           page?: number;
           limit?: number;
           status?: string;

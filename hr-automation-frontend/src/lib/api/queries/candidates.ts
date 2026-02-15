@@ -3,7 +3,7 @@ import { api, API_URLS, fetchWithAuth } from '../client';
 import type { Candidate } from '../generated';
 
 export function useCandidates(params?: {
-  job_requirement_id?: string;
+  job_requirement_id: string;
   page?: number;
   limit?: number;
   status?: string;
@@ -121,21 +121,3 @@ export function useAllJobsCandidates(jobIds: string[]) {
 export const createCandidatesQuery = (params?: Parameters<typeof useCandidates>[0]) => useCandidates(params);
 export const createCandidateQuery = (candidateId: string | null) => useCandidate(candidateId);
 export const createApplyMutation = () => useSubmitApplication();
-export const createUpdateCandidateMutation = () => {
-  const queryClient = useQueryClient();
-
-  return createMutation({
-    mutationFn: async ({ candidateId, data }: { candidateId: string; data: Partial<Candidate> }) => {
-      const response: any = await api.PUT('/candidates/{candidate_id}', {
-        params: { path: { candidate_id: candidateId } },
-        body: data as any
-      });
-      if (response.error) throw new Error(response.error.message || 'Failed to update candidate');
-      return response.data;
-    },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['candidate', variables.candidateId] });
-      queryClient.invalidateQueries({ queryKey: ['candidates'] });
-    }
-  });
-};

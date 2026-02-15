@@ -16,10 +16,6 @@ export const ROUTES = {
   jobTechnical: (id: string) => `/jobs/${id}/technical`,
   jobHR: (id: string) => `/jobs/${id}/hr`,
 
-  // Candidates
-  candidates: '/candidates',
-  candidate: (id: string) => `/candidates/${id}`,
-
   // Analytics
   analytics: '/analytics',
 
@@ -44,11 +40,6 @@ export const NAV_ITEMS = [
     label: 'Jobs',
     href: ROUTES.jobs,
     icon: 'Briefcase'
-  },
-  {
-    label: 'Candidates',
-    href: ROUTES.candidates,
-    icon: 'Users'
   },
   {
     label: 'Analytics',

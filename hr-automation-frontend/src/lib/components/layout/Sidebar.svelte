@@ -9,7 +9,6 @@
   import {
     LayoutDashboard,
     Briefcase,
-    Users,
     BarChart3,
     Building2,
     Settings,
@@ -21,7 +20,6 @@
   const iconMap: Record<string, any> = {
     LayoutDashboard,
     Briefcase,
-    Users,
     BarChart3,
     Building2,
     Settings

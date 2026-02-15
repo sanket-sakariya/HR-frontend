@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
-  import { createCandidateQuery, createUpdateCandidateMutation } from '$lib/api/queries/candidates';
+  import { createCandidateQuery } from '$lib/api/queries/candidates';
   import { formatRelative, formatDate } from '$lib/utils/format';
   import Button from '$lib/components/ui/Button.svelte';
   import StatusBadge from '$lib/components/shared/StatusBadge.svelte';
@@ -33,7 +33,6 @@
 
   const candidateId = $derived($page.params.candidate_id);
   const candidateQuery = createCandidateQuery(candidateId);
-  const updateMutation = createUpdateCandidateMutation();
 
   let activeTab = $state<'overview' | 'interviews' | 'notes' | 'timeline'>('overview');
   let showRejectDialog = $state(false);
@@ -65,18 +64,9 @@
     candidate ? statusConfig[candidate.status || 'applied'] || statusConfig.applied : statusConfig.applied
   );
 
-  async function updateStatus(newStatus: string) {
-    if (!candidate) return;
-    
-    try {
-      await $updateMutation.mutateAsync({
-        candidateId,
-        data: { status: newStatus as any }
-      });
-      toast.success(`Candidate moved to ${statusConfig[newStatus]?.label || newStatus}`);
-    } catch (error) {
-      toast.error('Failed to update candidate status');
-    }
+  function updateStatus(newStatus: string) {
+    // Status updates happen automatically through the interview pipeline stages
+    toast.info('Candidate status changes occur through the interview pipeline');
   }
 
   function handleReject() {
@@ -212,7 +202,7 @@
             <Calendar class="w-4 h-4 mr-2" />
             Schedule Interview
           </Button>
-          <Button variant="outline" size="sm" onclick={() => updateStatus('offered')} disabled={$updateMutation.isPending}>
+          <Button variant="outline" size="sm" onclick={() => updateStatus('offered')}>
             <CheckCircle class="w-4 h-4 mr-2" />
             Make Offer
           </Button>
