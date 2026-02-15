@@ -7,7 +7,7 @@ export function useCreateAptitudeTest() {
 
   return createMutation({
     mutationFn: async (jobId: string) => {
-      const response = await api.POST('/aptitude/create/{job_requirement_id}', {
+      const response: any = await api.POST('/aptitude/create/{job_requirement_id}', {
         params: { path: { job_requirement_id: jobId } }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to create aptitude test');
@@ -24,7 +24,7 @@ export function useAptitudeTestForm(jobId: string | null, testId: string | null)
     queryKey: ['aptitude-test-form', jobId, testId],
     queryFn: async () => {
       if (!jobId || !testId) throw new Error('Job ID and Test ID are required');
-      const response = await api.GET('/aptitude/generate-test-form/{job_requirement_id}/{aptitude_test_id}', {
+      const response: any = await api.GET('/aptitude/generate-test-form/{job_requirement_id}/{aptitude_test_id}', {
         params: { path: { job_requirement_id: jobId, aptitude_test_id: testId } }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to fetch test form');
@@ -39,7 +39,7 @@ export function useAptitudeLoginForm(jobId: string | null, testId: string | null
     queryKey: ['aptitude-login-form', jobId, testId],
     queryFn: async () => {
       if (!jobId || !testId) throw new Error('Job ID and Test ID are required');
-      const response = await api.GET('/aptitude/generate-login-form/{job_requirement_id}/{aptitude_test_id}', {
+      const response: any = await api.GET('/aptitude/generate-login-form/{job_requirement_id}/{aptitude_test_id}', {
         params: { path: { job_requirement_id: jobId, aptitude_test_id: testId } }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to fetch login form');
@@ -79,7 +79,7 @@ export function useSubmitAptitudeTest() {
       answers: Record<string, string>;
       time_taken_seconds: number;
     }) => {
-      const response = await api.POST('/aptitude/submit-test', {
+      const response: any = await api.POST('/aptitude/submit-test', {
         body: payload
       });
       if (response.error) throw new Error(response.error.message || 'Failed to submit test');
