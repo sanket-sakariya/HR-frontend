@@ -3,14 +3,22 @@
   import { useCreateAptitudeTest } from '$lib/api/queries/aptitude';
   import Card from '$lib/components/ui/Card.svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import Skeleton from '$lib/components/ui/Skeleton.svelte';
   import {
     Brain,
     Loader2,
     ExternalLink,
     AlertCircle,
     Copy,
-    Check
+    Check,
+    Sparkles,
+    Clock,
+    FileQuestion,
+    Target,
+    Users,
+    ArrowRight,
+    Link2,
+    CheckCircle2,
+    RefreshCw
   } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
 
@@ -24,19 +32,17 @@
   let copied = $state(false);
 
   // Generate frontend URL for candidates to access the test
-  // This uses the frontend route, not the backend API URL
   const frontendTestUrl = $derived(() => {
     if (!testData?.data?.aptitude_test_id || !jobId) return null;
-    // Use the frontend route for candidates
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
     return `${baseUrl}/aptitude/test/${jobId}/${testData.data.aptitude_test_id}/start`;
   });
 
   // Also keep the backend URL for reference
   const backendUrl = $derived(
-    testData?.data?.test_access_url || 
+    testData?.data?.test_access_url ||
     testData?.data?.public_url ||
-    testData?.data?.entry_url || 
+    testData?.data?.entry_url ||
     testData?.data?.test_url ||
     testData?.data?.url
   );
@@ -67,7 +73,7 @@
       navigator.clipboard.writeText(url);
       copied = true;
       toast.success('Link copied to clipboard');
-      setTimeout(() => copied = false, 2000);
+      setTimeout(() => (copied = false), 2000);
     }
   }
 
@@ -83,131 +89,227 @@
   <title>Create Aptitude Test | HR Automation</title>
 </svelte:head>
 
-<div class="min-h-screen bg-obsidian-950 flex items-center justify-center">
-  <div class="max-w-md w-full mx-4">
-    {#if !testData && !isCreating}
-      <!-- Initial state - Create test button -->
-      <Card class="p-8 text-center">
-        <div class="w-20 h-20 rounded-2xl bg-royal-900/50 flex items-center justify-center mx-auto mb-6">
-          <Brain class="w-10 h-10 text-royal-400" />
-        </div>
-        <h2 class="text-2xl font-bold text-obsidian-100 mb-2">Create Aptitude Test</h2>
-        <p class="text-obsidian-400 mb-6">
-          Generate an AI-powered aptitude test for this job requirement. Selected candidates will be able to take this test.
-        </p>
-        
-        <div class="p-4 rounded-lg bg-obsidian-800/50 border border-obsidian-700 mb-6 text-left">
-          <h3 class="text-sm font-medium text-obsidian-200 mb-2">Test Details:</h3>
-          <ul class="text-sm text-obsidian-400 space-y-1">
-            <li>• 30 AI-generated questions</li>
-            <li>• 45 minutes time limit</li>
-            <li>• Multiple choice format</li>
-            <li>• Automatic scoring</li>
-          </ul>
-        </div>
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-surface-300 flex flex-col">
+  <!-- Header -->
+  <header class="bg-white/80 backdrop-blur-sm border-b border-gray-200/60">
+    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 flex items-center justify-center shadow-purple-sm">
+        <Brain class="w-5 h-5 text-white" />
+      </div>
+      <div>
+        <h1 class="font-semibold text-gray-800">HR Automation</h1>
+        <p class="text-xs text-gray-500">Aptitude Test Generator</p>
+      </div>
+    </div>
+  </header>
 
-        <Button class="w-full" onclick={createTest} disabled={isCreating}>
-          {#if isCreating}
-            <Loader2 class="w-4 h-4 mr-2 animate-spin" />
-            Creating Test...
-          {:else}
-            <Brain class="w-4 h-4 mr-2" />
-            Create Aptitude Test
-          {/if}
-        </Button>
-      </Card>
-    {:else if isCreating}
-      <!-- Loading state -->
-      <Card class="p-8 text-center">
-        <div class="w-16 h-16 rounded-xl bg-royal-900/50 flex items-center justify-center mx-auto mb-4">
-          <Brain class="w-8 h-8 text-royal-400" />
-        </div>
-        <h2 class="text-xl font-bold text-obsidian-100 mb-2">Creating Aptitude Test</h2>
-        <p class="text-obsidian-400 mb-4">Please wait while we generate questions...</p>
-        <div class="flex items-center justify-center gap-2 text-royal-400">
-          <Loader2 class="w-5 h-5 animate-spin" />
-          <span>This may take a moment</span>
-        </div>
-      </Card>
-    {:else if testData?.data?.aptitude_test_id}
-      <!-- Success state - Show test link -->
-      <Card class="p-8 text-center">
-        <div class="w-20 h-20 rounded-2xl bg-green-900/50 flex items-center justify-center mx-auto mb-6">
-          <Check class="w-10 h-10 text-green-400" />
-        </div>
-        <h2 class="text-2xl font-bold text-obsidian-100 mb-2">
-          {testData?.data?.test_title || 'Aptitude Test Created'}
-        </h2>
-        <p class="text-obsidian-400 mb-6">
-          {testData?.data?.already_exists ? 'Test already exists. ' : ''}
-          Share this link with selected candidates.
-        </p>
-
-        {#if testData?.data?.total_questions}
-          <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
-            <div class="bg-obsidian-800/50 rounded-lg p-3">
-              <p class="text-obsidian-500">Questions</p>
-              <p class="text-lg font-semibold text-obsidian-100">{testData.data.total_questions}</p>
-            </div>
-            <div class="bg-obsidian-800/50 rounded-lg p-3">
-              <p class="text-obsidian-500">Test ID</p>
-              <p class="text-xs font-mono text-obsidian-300 truncate">{testData.data.aptitude_test_id}</p>
-            </div>
-          </div>
-        {/if}
-
-        <div class="space-y-3 mb-6">
-          <Button class="w-full" onclick={openTest}>
-            <ExternalLink class="w-4 h-4 mr-2" />
-            Open Test Page
-          </Button>
-          <Button variant="outline" class="w-full" onclick={copyLink}>
-            {#if copied}
-              <Check class="w-4 h-4 mr-2" />
-              Copied!
-            {:else}
-              <Copy class="w-4 h-4 mr-2" />
-              Copy Test Link
-            {/if}
-          </Button>
-        </div>
-        
-        <div class="p-4 rounded-lg bg-obsidian-800/50 border border-obsidian-700">
-          <p class="text-xs text-obsidian-500 mb-2">Candidate Test URL (share this with candidates):</p>
-          <p class="font-mono text-xs text-obsidian-400 break-all">
-            {frontendTestUrl()}
+  <!-- Main content -->
+  <main class="flex-1 flex items-center justify-center p-4">
+    <div class="max-w-2xl w-full">
+      {#if !testData && !isCreating}
+        <!-- Initial state - Create test -->
+        <div class="text-center mb-8">
+          <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-100 text-purple-700 text-sm font-medium mb-4">
+            <Sparkles class="w-4 h-4" />
+            AI-Powered Assessment
+          </span>
+          <h1 class="text-3xl font-bold text-gray-800 mb-3">Create Aptitude Test</h1>
+          <p class="text-gray-500 max-w-md mx-auto">
+            Generate an intelligent aptitude test tailored to your job requirements
           </p>
         </div>
 
-        <div class="mt-6 p-4 rounded-lg bg-amber-900/20 border border-amber-800/50">
-          <div class="flex gap-3 text-left">
-            <AlertCircle class="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-            <div class="text-sm text-amber-200">
-              <p class="font-medium mb-1">Next Steps:</p>
-              <ol class="list-decimal list-inside text-amber-300/80 space-y-1 text-xs">
-                <li>Select top candidates from resume screening</li>
-                <li>Share the test link with selected candidates</li>
-                <li>Candidates take the test via the link</li>
-                <li>Review results and select top performers</li>
-              </ol>
+        <Card class="p-8">
+          <div class="grid sm:grid-cols-2 gap-4 mb-8">
+            <div class="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
+              <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                <FileQuestion class="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p class="font-medium text-gray-800">30 Questions</p>
+                <p class="text-sm text-gray-500">AI-generated based on job role</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
+              <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                <Clock class="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p class="font-medium text-gray-800">45 Minutes</p>
+                <p class="text-sm text-gray-500">Timed assessment</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
+              <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                <Target class="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p class="font-medium text-gray-800">Multiple Choice</p>
+                <p class="text-sm text-gray-500">Easy to complete format</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
+              <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                <Users class="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p class="font-medium text-gray-800">Auto Scoring</p>
+                <p class="text-sm text-gray-500">Instant results & ranking</p>
+              </div>
             </div>
           </div>
+
+          <Button class="w-full" size="lg" onclick={createTest}>
+            <Sparkles class="w-5 h-5" />
+            Generate Aptitude Test
+            <ArrowRight class="w-5 h-5" />
+          </Button>
+        </Card>
+      {:else if isCreating}
+        <!-- Loading state -->
+        <Card class="p-8">
+          <div class="text-center">
+            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-500 flex items-center justify-center mx-auto mb-6 shadow-purple-md animate-pulse">
+              <Brain class="w-10 h-10 text-white" />
+            </div>
+            <h2 class="text-xl font-bold text-gray-800 mb-2">Creating Your Test</h2>
+            <p class="text-gray-500 mb-6">Our AI is generating questions tailored to your job requirements...</p>
+
+            <div class="flex items-center justify-center gap-3 text-purple-600 mb-6">
+              <Loader2 class="w-5 h-5 animate-spin" />
+              <span class="font-medium">This may take a moment</span>
+            </div>
+
+            <!-- Progress steps -->
+            <div class="max-w-sm mx-auto space-y-3">
+              <div class="flex items-center gap-3 text-sm">
+                <div class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <Check class="w-3.5 h-3.5 text-emerald-600" />
+                </div>
+                <span class="text-gray-600">Analyzing job requirements</span>
+              </div>
+              <div class="flex items-center gap-3 text-sm">
+                <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center animate-pulse">
+                  <Loader2 class="w-3.5 h-3.5 text-purple-600 animate-spin" />
+                </div>
+                <span class="text-gray-600">Generating questions</span>
+              </div>
+              <div class="flex items-center gap-3 text-sm text-gray-400">
+                <div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
+                  <span class="w-2 h-2 rounded-full bg-gray-300"></span>
+                </div>
+                <span>Creating test form</span>
+              </div>
+            </div>
+          </div>
+        </Card>
+      {:else if testData?.data?.aptitude_test_id}
+        <!-- Success state - Show test link -->
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <CheckCircle2 class="w-10 h-10 text-white" />
+          </div>
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">
+            {testData?.data?.test_title || 'Test Created Successfully!'}
+          </h1>
+          <p class="text-gray-500">
+            {testData?.data?.already_exists ? 'Test already exists. ' : ''}
+            Share the link below with candidates.
+          </p>
         </div>
-      </Card>
-    {:else}
-      <!-- Error state -->
-      <Card class="p-8 text-center">
-        <div class="w-16 h-16 rounded-full bg-red-900/50 flex items-center justify-center mx-auto mb-4">
-          <AlertCircle class="w-8 h-8 text-red-400" />
-        </div>
-        <h2 class="text-xl font-bold text-obsidian-100 mb-2">Something Went Wrong</h2>
-        <p class="text-obsidian-400 mb-4">
-          Failed to create the aptitude test. Please try again.
-        </p>
-        <Button onclick={createTest}>
-          Try Again
-        </Button>
-      </Card>
-    {/if}
-  </div>
+
+        <Card class="p-6 mb-6">
+          {#if testData?.data?.total_questions}
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="text-center p-4 rounded-xl bg-gray-50 border border-gray-100">
+                <p class="text-2xl font-bold text-gray-800">{testData.data.total_questions}</p>
+                <p class="text-sm text-gray-500">Questions</p>
+              </div>
+              <div class="text-center p-4 rounded-xl bg-gray-50 border border-gray-100">
+                <p class="text-xs font-mono text-gray-400 truncate">{testData.data.aptitude_test_id}</p>
+                <p class="text-sm text-gray-500">Test ID</p>
+              </div>
+            </div>
+          {/if}
+
+          <div class="space-y-3">
+            <Button class="w-full" size="lg" onclick={openTest}>
+              <ExternalLink class="w-5 h-5" />
+              Preview Test
+            </Button>
+            <Button variant="outline" class="w-full" size="lg" onclick={copyLink}>
+              {#if copied}
+                <Check class="w-5 h-5" />
+                Copied to Clipboard!
+              {:else}
+                <Copy class="w-5 h-5" />
+                Copy Candidate Link
+              {/if}
+            </Button>
+          </div>
+        </Card>
+
+        <!-- URL display -->
+        <Card class="p-4 mb-6">
+          <div class="flex items-center gap-3 mb-2">
+            <Link2 class="w-4 h-4 text-gray-400" />
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Candidate Test URL</p>
+          </div>
+          <p class="font-mono text-sm text-purple-600 break-all bg-purple-50 p-3 rounded-lg border border-purple-100">
+            {frontendTestUrl()}
+          </p>
+        </Card>
+
+        <!-- Next steps -->
+        <Card class="p-6 border-purple-200 bg-purple-50/50">
+          <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <Target class="w-5 h-5 text-purple-600" />
+            Next Steps
+          </h3>
+          <ol class="space-y-3">
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 text-sm font-medium text-purple-700">1</span>
+              <span class="text-gray-600 text-sm">Select top candidates from resume screening</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 text-sm font-medium text-purple-700">2</span>
+              <span class="text-gray-600 text-sm">Share the test link with selected candidates via email</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 text-sm font-medium text-purple-700">3</span>
+              <span class="text-gray-600 text-sm">Monitor test completions and review scores in dashboard</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 text-sm font-medium text-purple-700">4</span>
+              <span class="text-gray-600 text-sm">Proceed with top performers to technical/HR interviews</span>
+            </li>
+          </ol>
+        </Card>
+      {:else}
+        <!-- Error state -->
+        <Card class="p-8">
+          <div class="text-center">
+            <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center mx-auto mb-6">
+              <AlertCircle class="w-8 h-8 text-red-500" />
+            </div>
+            <h2 class="text-xl font-bold text-gray-800 mb-2">Something Went Wrong</h2>
+            <p class="text-gray-500 mb-6">
+              We couldn't create the aptitude test. Please try again.
+            </p>
+            <Button onclick={createTest} class="w-full">
+              <RefreshCw class="w-4 h-4" />
+              Try Again
+            </Button>
+          </div>
+        </Card>
+      {/if}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 text-center">
+    <p class="text-xs text-gray-400">
+      Powered by HR Automation Platform
+    </p>
+  </footer>
 </div>

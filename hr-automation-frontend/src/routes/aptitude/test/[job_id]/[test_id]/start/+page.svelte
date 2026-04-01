@@ -13,7 +13,12 @@
     Clock,
     FileQuestion,
     Mail,
-    Lock
+    Lock,
+    CheckCircle2,
+    ShieldCheck,
+    Wifi,
+    Timer,
+    BookOpen
   } from 'lucide-svelte';
   import { toast } from 'svelte-sonner';
 
@@ -57,14 +62,14 @@
         testFormUrl = result.data.test_form_url || result.data.form_url;
         candidateInfo = result.data.candidate_info;
         attemptInfo = result.data.attempt_info;
-        
+
         toast.success('Login successful! Redirecting to test...');
-        
+
         // Auto-redirect after short delay
         if (testFormUrl) {
           setTimeout(() => {
             window.location.href = testFormUrl!;
-          }, 1500);
+          }, 2000);
         }
       }
     } catch (error: any) {
@@ -88,147 +93,231 @@
   <title>Start Aptitude Test | HR Automation</title>
 </svelte:head>
 
-<div class="min-h-screen bg-obsidian-950 flex items-center justify-center">
-  <div class="max-w-md w-full mx-4">
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-surface-300">
+  <!-- Header -->
+  <header class="bg-white/80 backdrop-blur-sm border-b border-gray-200/60 sticky top-0 z-10">
+    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 flex items-center justify-center shadow-purple-sm">
+        <Brain class="w-5 h-5 text-white" />
+      </div>
+      <div>
+        <h1 class="font-semibold text-gray-800">HR Automation</h1>
+        <p class="text-xs text-gray-500">Aptitude Assessment</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
     {#if testFormUrl}
       <!-- Successfully logged in - redirecting -->
-      <Card class="p-8 text-center">
-        <div class="w-20 h-20 rounded-2xl bg-green-900/50 flex items-center justify-center mx-auto mb-6 animate-pulse">
-          <Brain class="w-10 h-10 text-green-400" />
-        </div>
-        
-        {#if candidateInfo}
-          <p class="text-sm text-obsidian-400 mb-2">Welcome,</p>
-          <h2 class="text-2xl font-bold text-obsidian-100 mb-1">
-            {candidateInfo.first_name} {candidateInfo.last_name}
-          </h2>
-          <p class="text-obsidian-500 text-sm mb-6">{candidateInfo.email}</p>
-        {:else}
-          <h2 class="text-2xl font-bold text-obsidian-100 mb-6">Login Successful!</h2>
-        {/if}
-
-        {#if attemptInfo}
-          <div class="bg-obsidian-800/50 rounded-lg p-4 mb-6">
-            <p class="text-sm text-obsidian-300">
-              {attemptInfo.message || `Attempt ${attemptInfo.user_attempt || 1}`}
-            </p>
+      <div class="max-w-md mx-auto animate-fade-in">
+        <Card class="p-8 text-center">
+          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <CheckCircle2 class="w-10 h-10 text-white" />
           </div>
-        {/if}
 
-        <p class="text-obsidian-400 mb-6">
-          Redirecting you to the test...
-        </p>
-        
-        <div class="flex items-center justify-center gap-2 text-royal-400 mb-6">
-          <Loader2 class="w-5 h-5 animate-spin" />
-          <span>Please wait</span>
-        </div>
+          {#if candidateInfo}
+            <p class="text-sm text-gray-500 mb-1">Welcome back,</p>
+            <h2 class="text-2xl font-bold text-gray-800 mb-1">
+              {candidateInfo.first_name} {candidateInfo.last_name}
+            </h2>
+            <p class="text-gray-400 text-sm mb-6">{candidateInfo.email}</p>
+          {:else}
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Login Successful!</h2>
+          {/if}
 
-        <Button onclick={goToTest} class="w-full">
-          <ExternalLink class="w-4 h-4 mr-2" />
-          Start Test Now
-        </Button>
-      </Card>
+          {#if attemptInfo}
+            <div class="bg-purple-50 rounded-xl p-4 mb-6 border border-purple-100">
+              <p class="text-sm text-purple-700 font-medium">
+                {attemptInfo.message || `Test Attempt #${attemptInfo.user_attempt || 1}`}
+              </p>
+            </div>
+          {/if}
+
+          <p class="text-gray-600 mb-6">
+            Preparing your test environment...
+          </p>
+
+          <div class="flex items-center justify-center gap-2 text-purple-600 mb-8">
+            <Loader2 class="w-5 h-5 animate-spin" />
+            <span class="font-medium">Redirecting</span>
+          </div>
+
+          <Button onclick={goToTest} class="w-full" size="lg">
+            <ExternalLink class="w-5 h-5" />
+            Start Test Now
+          </Button>
+        </Card>
+      </div>
     {:else}
       <!-- Login form -->
-      <Card class="p-8">
-        <div class="text-center mb-8">
-          <div class="w-16 h-16 rounded-xl bg-royal-900/50 flex items-center justify-center mx-auto mb-4">
-            <Brain class="w-8 h-8 text-royal-400" />
-          </div>
-          <h2 class="text-2xl font-bold text-obsidian-100 mb-2">Aptitude Test</h2>
-          <p class="text-obsidian-400">
-            Please login with your candidate credentials to start the test.
-          </p>
-        </div>
-
-        {#if $testFormQuery.data?.data?.test_details}
-          <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
-            <div class="bg-obsidian-800/50 rounded-lg p-3 text-center">
-              <Clock class="w-5 h-5 text-obsidian-400 mx-auto mb-1" />
-              <p class="text-obsidian-500 text-xs">Duration</p>
-              <p class="font-semibold text-obsidian-100">
-                {$testFormQuery.data.data.test_details.total_time_minutes || 45} min
-              </p>
-            </div>
-            <div class="bg-obsidian-800/50 rounded-lg p-3 text-center">
-              <FileQuestion class="w-5 h-5 text-obsidian-400 mx-auto mb-1" />
-              <p class="text-obsidian-500 text-xs">Questions</p>
-              <p class="font-semibold text-obsidian-100">
-                {$testFormQuery.data.data.test_details.total_questions || 30}
-              </p>
-            </div>
-          </div>
-        {/if}
-
-        {#if loginError}
-          <div class="mb-6 p-4 rounded-lg bg-red-900/20 border border-red-800/50">
-            <div class="flex gap-3">
-              <AlertCircle class="w-5 h-5 text-red-400 flex-shrink-0" />
-              <p class="text-sm text-red-200">{loginError}</p>
-            </div>
-          </div>
-        {/if}
-
-        <form onsubmit={handleLogin} class="space-y-4">
+      <div class="grid lg:grid-cols-2 gap-8 items-start">
+        <!-- Left side - Test info -->
+        <div class="space-y-6">
           <div>
-            <Label for="email">Email Address</Label>
-            <div class="relative mt-1">
-              <Mail class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-obsidian-500" />
-              <Input
-                id="email"
-                type="email"
-                bind:value={email}
-                placeholder="your.email@example.com"
-                class="pl-10"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label for="password">Password</Label>
-            <div class="relative mt-1">
-              <Lock class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-obsidian-500" />
-              <Input
-                id="password"
-                type="password"
-                bind:value={password}
-                placeholder="••••••••"
-                class="pl-10"
-                required
-              />
-            </div>
-            <p class="text-xs text-obsidian-500 mt-1">
-              Use the password provided in your application confirmation email.
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium mb-4">
+              <Brain class="w-4 h-4" />
+              Aptitude Assessment
+            </span>
+            <h1 class="text-3xl font-bold text-gray-800 mb-3">
+              Candidate Assessment Test
+            </h1>
+            <p class="text-gray-600 text-lg">
+              Complete this assessment to demonstrate your skills and move forward in the hiring process.
             </p>
           </div>
 
-          <Button type="submit" class="w-full" disabled={isSubmitting}>
-            {#if isSubmitting}
-              <Loader2 class="w-4 h-4 mr-2 animate-spin" />
-              Verifying...
-            {:else}
-              Start Test
-            {/if}
-          </Button>
-        </form>
-
-        <div class="mt-6 p-4 rounded-lg bg-amber-900/20 border border-amber-800/50">
-          <div class="flex gap-3 text-left">
-            <AlertCircle class="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-            <div class="text-sm text-amber-200">
-              <p class="font-medium mb-1">Before you begin:</p>
-              <ul class="list-disc list-inside text-amber-300/80 space-y-1 text-xs">
-                <li>Ensure stable internet connection</li>
-                <li>The test has a time limit</li>
-                <li>You cannot pause once started</li>
-                <li>Tab switching may be monitored</li>
-              </ul>
+          {#if $testFormQuery.data?.data?.test_details}
+            <div class="grid grid-cols-2 gap-4">
+              <Card class="p-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                    <Clock class="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <p class="text-xs text-gray-500 uppercase tracking-wide">Duration</p>
+                    <p class="text-lg font-bold text-gray-800">
+                      {$testFormQuery.data.data.test_details.total_time_minutes || 45} min
+                    </p>
+                  </div>
+                </div>
+              </Card>
+              <Card class="p-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                    <FileQuestion class="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <p class="text-xs text-gray-500 uppercase tracking-wide">Questions</p>
+                    <p class="text-lg font-bold text-gray-800">
+                      {$testFormQuery.data.data.test_details.total_questions || 30}
+                    </p>
+                  </div>
+                </div>
+              </Card>
             </div>
-          </div>
+          {/if}
+
+          <!-- Instructions -->
+          <Card class="p-6">
+            <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <BookOpen class="w-5 h-5 text-purple-600" />
+              Before You Begin
+            </h3>
+            <div class="space-y-3">
+              <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Wifi class="w-3.5 h-3.5 text-emerald-600" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-700">Stable Internet Connection</p>
+                  <p class="text-xs text-gray-500">Ensure you have reliable connectivity throughout the test</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Timer class="w-3.5 h-3.5 text-amber-600" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-700">Time Limit</p>
+                  <p class="text-xs text-gray-500">The test has a strict time limit and cannot be paused</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <ShieldCheck class="w-3.5 h-3.5 text-purple-600" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-700">Monitored Session</p>
+                  <p class="text-xs text-gray-500">Tab switching and navigation may be recorded</p>
+                </div>
+              </div>
+            </div>
+          </Card>
         </div>
-      </Card>
+
+        <!-- Right side - Login form -->
+        <div>
+          <Card class="p-6 lg:p-8">
+            <div class="text-center mb-6">
+              <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 flex items-center justify-center mx-auto mb-4 shadow-purple-md">
+                <Lock class="w-7 h-7 text-white" />
+              </div>
+              <h2 class="text-xl font-bold text-gray-800">Candidate Login</h2>
+              <p class="text-sm text-gray-500 mt-1">
+                Enter your credentials to start the assessment
+              </p>
+            </div>
+
+            {#if loginError}
+              <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200">
+                <div class="flex gap-3">
+                  <AlertCircle class="w-5 h-5 text-red-500 flex-shrink-0" />
+                  <p class="text-sm text-red-700">{loginError}</p>
+                </div>
+              </div>
+            {/if}
+
+            <form onsubmit={handleLogin} class="space-y-5">
+              <div>
+                <Label for="email" class="text-gray-700">Email Address</Label>
+                <div class="relative mt-1.5">
+                  <Mail class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    id="email"
+                    type="email"
+                    bind:value={email}
+                    placeholder="your.email@example.com"
+                    class="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label for="password" class="text-gray-700">Password</Label>
+                <div class="relative mt-1.5">
+                  <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    id="password"
+                    type="password"
+                    bind:value={password}
+                    placeholder="Enter your password"
+                    class="pl-10"
+                    required
+                  />
+                </div>
+                <p class="text-xs text-gray-500 mt-2">
+                  Use the password from your application confirmation email
+                </p>
+              </div>
+
+              <Button type="submit" class="w-full" size="lg" disabled={isSubmitting}>
+                {#if isSubmitting}
+                  <Loader2 class="w-5 h-5 animate-spin" />
+                  Verifying Credentials...
+                {:else}
+                  <Brain class="w-5 h-5" />
+                  Start Assessment
+                {/if}
+              </Button>
+            </form>
+
+            <div class="mt-6 pt-6 border-t border-gray-100 text-center">
+              <p class="text-xs text-gray-400">
+                By starting the test, you agree to complete it honestly and independently.
+              </p>
+            </div>
+          </Card>
+        </div>
+      </div>
     {/if}
-  </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto py-6 text-center">
+    <p class="text-xs text-gray-400">
+      Powered by HR Automation Platform
+    </p>
+  </footer>
 </div>

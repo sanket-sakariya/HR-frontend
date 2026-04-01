@@ -2,7 +2,7 @@
   import { cn } from '$lib/utils/cn';
 
   interface Props {
-    variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success';
+    variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success' | 'outline';
     size?: 'sm' | 'md' | 'lg';
     disabled?: boolean;
     loading?: boolean;
@@ -25,6 +25,7 @@
   const variants = {
     primary: 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white shadow-purple-sm hover:shadow-purple-md hover:-translate-y-0.5 active:translate-y-0',
     secondary: 'bg-white hover:bg-purple-50 text-gray-700 border border-gray-200 hover:border-purple-300',
+    outline: 'bg-transparent hover:bg-purple-50 text-purple-600 border-2 border-purple-500 hover:border-purple-600',
     ghost: 'hover:bg-purple-50 text-gray-500 hover:text-purple-700',
     danger: 'bg-red-50 hover:bg-red-100 text-red-600 border border-red-200',
     success: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200'
