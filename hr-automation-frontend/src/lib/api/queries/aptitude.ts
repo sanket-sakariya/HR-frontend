@@ -1,6 +1,5 @@
 import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
 import { api } from '../client';
-import type { AptitudeTest } from '../generated';
 
 export function useCreateAptitudeTest() {
   const queryClient = useQueryClient();
@@ -72,15 +71,41 @@ export function useValidateAptitudeLogin() {
   });
 }
 
+// Fetch test details and questions for candidates
+export function useAptitudeTestQuestions(jobId: string | null) {
+  return createQuery({
+    queryKey: ['aptitude-test-questions', jobId],
+    queryFn: async () => {
+      if (!jobId) throw new Error('Job ID is required');
+      const response: any = await api.GET('/aptitude/get-test-questions/{job_requirement_id}', {
+        params: { path: { job_requirement_id: jobId } }
+      });
+      if (response.error) throw new Error(response.error.message || 'Failed to fetch test questions');
+      return response.data;
+    },
+    enabled: !!jobId,
+    staleTime: Infinity, // Questions don't change during test
+    gcTime: 1000 * 60 * 60 // Keep in cache for 1 hour
+  });
+}
+
 export function useSubmitAptitudeTest() {
   return createMutation({
     mutationFn: async (payload: {
       attempt_id: string;
-      answers: Record<string, string>;
+      answers: Record<number, string>;
       time_taken_seconds: number;
+      tab_switches?: number;
+      keyboard_violations?: number;
     }) => {
       const response: any = await api.POST('/aptitude/submit-test', {
-        body: payload
+        body: {
+          attempt_id: payload.attempt_id,
+          answers: payload.answers,
+          time_taken_seconds: payload.time_taken_seconds,
+          tab_switches: payload.tab_switches || 0,
+          keyboard_violations: payload.keyboard_violations || 0
+        }
       });
       if (response.error) throw new Error(response.error.message || 'Failed to submit test');
       return response.data;
@@ -119,17 +144,56 @@ export function useSelectTopAptitudeCandidates() {
   });
 }
 
-// Alias exports for convenience
-export const createAptitudeTestMutation = () => useCreateAptitudeTest();
-export const createAptitudeTestsQuery = (jobId: string | null) => {
-  // Note: There's no endpoint to list all tests. Use localStorage to persist test info after creation.
-  return createQuery({
-    queryKey: ['aptitude-tests', jobId],
-    queryFn: async () => {
-      // Return empty array - tests should be stored locally after creation
-      return [];
-    },
-    enabled: false // Always disabled since there's no list endpoint
-  });
-};
-export const createCreateAptitudeTestMutation = () => useCreateAptitudeTest();
+// Question interface for type safety
+export interface AptitudeQuestion {
+  question_id: string;
+  question_number: number;
+  difficulty: 'simple' | 'medium' | 'hard';
+  category: string;
+  question_text: string;
+  options: Record<string, string>;
+  time_allocated_seconds: number;
+  tags?: string[];
+}
+
+export interface TestDetails {
+  aptitude_test_id: string;
+  job_requirement_id: string;
+  test_title: string;
+  total_questions: number;
+  total_time_minutes: number;
+  passing_score_percentage: number;
+  test_metadata?: Record<string, any>;
+  proctoring_settings?: {
+    tab_switch_detection?: boolean;
+    keyboard_shortcuts_blocked?: boolean;
+  };
+}
+
+export interface AttemptInfo {
+  attempt_id: string;
+  status: string;
+  user_attempt: number;
+  message?: string;
+}
+
+export interface CandidateInfo {
+  candidate_id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+}
+
+export interface TestResult {
+  attempt_id: string;
+  candidate_email: string;
+  candidate_name: string;
+  score: number;
+  correct_answers_count: number;
+  total_questions_attempted: number;
+  total_questions: number;
+  passed: boolean;
+  aptitude_test_result: 'pass' | 'fail';
+  time_taken_seconds: number;
+  submitted_at: string;
+}
