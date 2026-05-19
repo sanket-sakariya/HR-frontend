@@ -39,8 +39,9 @@
     </div>
   {:else}
     {#each recentCandidates as candidate (candidate.candidate_id)}
-      <div
-        class="flex items-center gap-4 p-4 rounded-lg bg-gray-100 border border-slate-800/50 transition-all"
+      <a
+        href={`/candidates/${candidate.candidate_id}`}
+        class="flex items-center gap-4 p-4 rounded-lg bg-gray-100 border border-slate-800/50 transition-all hover:bg-gray-200 hover:shadow-sm cursor-pointer no-underline"
       >
         <!-- Avatar -->
         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-royal-600 to-royal-500 flex items-center justify-center flex-shrink-0">
@@ -66,7 +67,7 @@
         {#if candidate.candidate_resume_score}
           <ScoreGauge score={candidate.candidate_resume_score} size="sm" />
         {/if}
-      </div>
+      </a>
     {/each}
 
     {#if candidates.length > 10}

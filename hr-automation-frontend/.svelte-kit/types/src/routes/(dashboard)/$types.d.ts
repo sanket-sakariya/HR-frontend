@@ -11,7 +11,7 @@ type OutputDataShape<T> = MaybeWithVoid<Omit<App.PageData, RequiredKeys<T>> & Pa
 type EnsureDefined<T> = T extends null | undefined ? {} : T;
 type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends U ? keyof U : never> = U extends unknown ? { [P in Exclude<A, keyof U>]?: never } & U : never;
 export type Snapshot<T = any> = Kit.Snapshot<T>;
-type LayoutRouteId = RouteId | "/(dashboard)/analytics" | "/(dashboard)/candidates/[candidate_id]" | "/(dashboard)/company" | "/(dashboard)/dashboard" | "/(dashboard)/jobs" | "/(dashboard)/jobs/[job_id]" | "/(dashboard)/jobs/[job_id]/aptitude" | "/(dashboard)/jobs/[job_id]/edit" | "/(dashboard)/jobs/[job_id]/hr" | "/(dashboard)/jobs/[job_id]/technical" | "/(dashboard)/jobs/new" | "/(dashboard)/settings"
+type LayoutRouteId = RouteId | "/(dashboard)/analytics" | "/(dashboard)/candidates" | "/(dashboard)/candidates/[candidate_id]" | "/(dashboard)/candidates/[candidate_id]/hr-interview" | "/(dashboard)/candidates/[candidate_id]/technical-interview" | "/(dashboard)/company" | "/(dashboard)/dashboard" | "/(dashboard)/jobs" | "/(dashboard)/jobs/[job_id]" | "/(dashboard)/jobs/[job_id]/aptitude" | "/(dashboard)/jobs/[job_id]/edit" | "/(dashboard)/jobs/[job_id]/hr" | "/(dashboard)/jobs/[job_id]/technical" | "/(dashboard)/jobs/new" | "/(dashboard)/settings"
 type LayoutParams = RouteParams & { candidate_id?: string; job_id?: string }
 type LayoutParentData = EnsureDefined<import('../$types.js').LayoutData>;
 

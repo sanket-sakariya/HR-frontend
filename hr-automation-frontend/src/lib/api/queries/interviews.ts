@@ -1,6 +1,54 @@
 import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
-import { api, techInterviewApi, hrInterviewApi } from '../client';
+import { api, techInterviewApi, hrInterviewApi, API_URLS, fetchWithAuth } from '../client';
 import type { TechnicalInterview, HRInterview, components } from '../generated';
+
+// ==================== CANDIDATE RESULT (technical + hr) ====================
+
+export function useTechnicalResultByCandidate(candidateIdGetter: string | null | (() => string | null)) {
+  const get = () => (typeof candidateIdGetter === 'function' ? candidateIdGetter() : candidateIdGetter);
+  return createQuery(() => {
+    const id = get();
+    return {
+      queryKey: ['technical-result-by-candidate', id],
+      queryFn: async () => {
+        if (!id) return null;
+        const res = await fetchWithAuth(`${API_URLS.main}/technical-interview/candidate/${id}/result`);
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          if (res.status === 404) return null;
+          throw new Error(body?.detail || body?.message || `HTTP ${res.status}`);
+        }
+        return body?.data ?? null;
+      },
+      enabled: !!id,
+      staleTime: 0,
+      refetchOnMount: 'always'
+    };
+  });
+}
+
+export function useHRResultByCandidate(candidateIdGetter: string | null | (() => string | null)) {
+  const get = () => (typeof candidateIdGetter === 'function' ? candidateIdGetter() : candidateIdGetter);
+  return createQuery(() => {
+    const id = get();
+    return {
+      queryKey: ['hr-result-by-candidate', id],
+      queryFn: async () => {
+        if (!id) return null;
+        const res = await fetchWithAuth(`${API_URLS.main}/hr-interview/candidate/${id}/result`);
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          if (res.status === 404) return null;
+          throw new Error(body?.detail || body?.message || `HTTP ${res.status}`);
+        }
+        return body?.data ?? null;
+      },
+      enabled: !!id,
+      staleTime: 0,
+      refetchOnMount: 'always'
+    };
+  });
+}
 
 // ==================== TECHNICAL INTERVIEW ====================
 

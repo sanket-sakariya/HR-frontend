@@ -30,7 +30,10 @@ export const nodes = [
 	() => import('./nodes/26'),
 	() => import('./nodes/27'),
 	() => import('./nodes/28'),
-	() => import('./nodes/29')
+	() => import('./nodes/29'),
+	() => import('./nodes/30'),
+	() => import('./nodes/31'),
+	() => import('./nodes/32')
 ];
 
 export const server_loads = [];
@@ -38,29 +41,32 @@ export const server_loads = [];
 export const dictionary = {
 		"/": [5],
 		"/(dashboard)/analytics": [8,[3]],
-		"/apply/[job_id]": [20],
-		"/aptitude/test/[job_id]/[test_id]": [22],
-		"/aptitude/test/[job_id]/[test_id]/results": [23],
-		"/aptitude/test/[job_id]/[test_id]/start": [24],
-		"/aptitude/test/[job_id]/[test_id]/take": [25],
-		"/aptitude/[job_id]": [21],
-		"/(dashboard)/candidates/[candidate_id]": [9,[3]],
-		"/(dashboard)/company": [10,[3]],
-		"/(dashboard)/dashboard": [11,[3]],
-		"/interview/hr/[session]": [26,[4]],
-		"/interview/hr/[session]/results": [27,[4]],
-		"/interview/technical/[session]": [28,[4]],
-		"/interview/technical/[session]/results": [29,[4]],
-		"/(dashboard)/jobs": [12,[3]],
-		"/(dashboard)/jobs/new": [18,[3]],
-		"/(dashboard)/jobs/[job_id]": [13,[3]],
-		"/(dashboard)/jobs/[job_id]/aptitude": [14,[3]],
-		"/(dashboard)/jobs/[job_id]/edit": [15,[3]],
-		"/(dashboard)/jobs/[job_id]/hr": [16,[3]],
-		"/(dashboard)/jobs/[job_id]/technical": [17,[3]],
+		"/apply/[job_id]": [23],
+		"/aptitude/test/[job_id]/[test_id]": [25],
+		"/aptitude/test/[job_id]/[test_id]/results": [26],
+		"/aptitude/test/[job_id]/[test_id]/start": [27],
+		"/aptitude/test/[job_id]/[test_id]/take": [28],
+		"/aptitude/[job_id]": [24],
+		"/(dashboard)/candidates": [9,[3]],
+		"/(dashboard)/candidates/[candidate_id]": [10,[3]],
+		"/(dashboard)/candidates/[candidate_id]/hr-interview": [11,[3]],
+		"/(dashboard)/candidates/[candidate_id]/technical-interview": [12,[3]],
+		"/(dashboard)/company": [13,[3]],
+		"/(dashboard)/dashboard": [14,[3]],
+		"/interview/hr/[session]": [29,[4]],
+		"/interview/hr/[session]/results": [30,[4]],
+		"/interview/technical/[session]": [31,[4]],
+		"/interview/technical/[session]/results": [32,[4]],
+		"/(dashboard)/jobs": [15,[3]],
+		"/(dashboard)/jobs/new": [21,[3]],
+		"/(dashboard)/jobs/[job_id]": [16,[3]],
+		"/(dashboard)/jobs/[job_id]/aptitude": [17,[3]],
+		"/(dashboard)/jobs/[job_id]/edit": [18,[3]],
+		"/(dashboard)/jobs/[job_id]/hr": [19,[3]],
+		"/(dashboard)/jobs/[job_id]/technical": [20,[3]],
 		"/(auth)/login": [6,[2]],
 		"/(auth)/register": [7,[2]],
-		"/(dashboard)/settings": [19,[3]]
+		"/(dashboard)/settings": [22,[3]]
 	};
 
 export const hooks = {

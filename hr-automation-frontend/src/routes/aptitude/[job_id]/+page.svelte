@@ -226,8 +226,8 @@
                 <p class="text-sm text-gray-500">Questions</p>
               </div>
               <div class="text-center p-4 rounded-xl bg-gray-50 border border-gray-100">
-                <p class="text-xs font-mono text-gray-400 truncate">{testData.data.aptitude_test_id}</p>
-                <p class="text-sm text-gray-500">Test ID</p>
+                <p class="text-2xl font-bold text-gray-800">{testData.data.passing_score ?? '—'}%</p>
+                <p class="text-sm text-gray-500">Pass Mark</p>
               </div>
             </div>
           {/if}

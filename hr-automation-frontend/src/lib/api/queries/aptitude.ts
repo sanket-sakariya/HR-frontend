@@ -1,5 +1,28 @@
 import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
-import { api } from '../client';
+import { api, API_URLS, fetchWithAuth } from '../client';
+
+export function useAptitudeAttemptByCandidate(candidateIdGetter: string | null | (() => string | null)) {
+  const get = () => (typeof candidateIdGetter === 'function' ? candidateIdGetter() : candidateIdGetter);
+  return createQuery(() => {
+    const id = get();
+    return {
+      queryKey: ['aptitude-attempt-by-candidate', id],
+      queryFn: async () => {
+        if (!id) return null;
+        const res = await fetchWithAuth(`${API_URLS.main}/aptitude/attempt/by-candidate/${id}`);
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          if (res.status === 404) return null;
+          throw new Error(body?.detail || body?.message || `HTTP ${res.status}`);
+        }
+        return body?.data ?? null;
+      },
+      enabled: !!id,
+      staleTime: 0,
+      refetchOnMount: 'always'
+    };
+  });
+}
 
 export function useCreateAptitudeTest() {
   const queryClient = useQueryClient();

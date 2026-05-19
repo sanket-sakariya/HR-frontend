@@ -178,9 +178,19 @@
               <div class="flex-1 px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 font-mono text-sm text-gray-600 truncate">
                 {window.location.origin}/aptitude/{jobId}
               </div>
-              <Button variant="outline" onclick={copyCandidateUrl}>
+              <Button variant="outline" onclick={copyCandidateUrl} title="Copy URL">
                 <Copy class="w-4 h-4" />
               </Button>
+              <a
+                href={`${window.location.origin}/aptitude/${jobId}`}
+                target="_blank"
+                rel="noopener"
+                title="Open in new tab"
+                class="inline-flex items-center justify-center gap-2 font-medium rounded-xl px-4 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white shadow-purple-sm hover:shadow-purple-md transition-all no-underline"
+              >
+                <ExternalLink class="w-4 h-4" />
+                Open
+              </a>
             </div>
           </div>
 
@@ -191,9 +201,19 @@
               <div class="flex-1 px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 font-mono text-sm text-gray-600 truncate">
                 {createdTest.public_url}
               </div>
-              <Button variant="outline" onclick={copyPublicUrl}>
+              <Button variant="outline" onclick={copyPublicUrl} title="Copy URL">
                 <Copy class="w-4 h-4" />
               </Button>
+              <a
+                href={createdTest.public_url}
+                target="_blank"
+                rel="noopener"
+                title="Open in new tab"
+                class="inline-flex items-center justify-center gap-2 font-medium rounded-xl px-4 py-2.5 bg-transparent hover:bg-purple-50 text-purple-600 border-2 border-purple-500 hover:border-purple-600 transition-all no-underline"
+              >
+                <ExternalLink class="w-4 h-4" />
+                Open
+              </a>
             </div>
           </div>
 
@@ -204,9 +224,19 @@
               <div class="flex-1 px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 font-mono text-sm text-gray-600 truncate">
                 {createdTest.test_access_url}
               </div>
-              <Button variant="outline" onclick={copyTestAccessUrl}>
+              <Button variant="outline" onclick={copyTestAccessUrl} title="Copy URL">
                 <Copy class="w-4 h-4" />
               </Button>
+              <a
+                href={createdTest.test_access_url}
+                target="_blank"
+                rel="noopener"
+                title="Open in new tab"
+                class="inline-flex items-center justify-center gap-2 font-medium rounded-xl px-4 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white shadow-purple-sm hover:shadow-purple-md transition-all no-underline"
+              >
+                <ExternalLink class="w-4 h-4" />
+                Open
+              </a>
             </div>
           </div>
         </div>

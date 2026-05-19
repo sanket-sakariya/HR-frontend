@@ -414,9 +414,75 @@
               <p class="text-gray-400">Candidates will appear here once they apply</p>
             </div>
           {:else}
-            <div class="space-y-6">
+            <div class="space-y-8">
+              <!-- Flat candidate list (clickable, full info) -->
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <h4 class="text-base font-semibold text-gray-800">
+                    All Candidates ({$candidatesQuery.data?.data?.data?.length || 0})
+                  </h4>
+                  <a
+                    href={`/candidates?job_id=${jobId}`}
+                    class="text-sm text-purple-600 hover:text-purple-500 font-medium"
+                  >
+                    View All
+                  </a>
+                </div>
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                  <table class="min-w-full text-sm">
+                    <thead class="bg-gray-50 text-gray-600">
+                      <tr>
+                        <th class="text-left font-medium px-4 py-2">Name</th>
+                        <th class="text-left font-medium px-4 py-2">Email</th>
+                        <th class="text-left font-medium px-4 py-2">Phone</th>
+                        <th class="text-left font-medium px-4 py-2">Resume Score</th>
+                        <th class="text-left font-medium px-4 py-2">Aptitude</th>
+                        <th class="text-left font-medium px-4 py-2">Status</th>
+                        <th class="text-right font-medium px-4 py-2">Applied</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 bg-white">
+                      {#each ($candidatesQuery.data?.data?.data || []) as c (c.candidate_id)}
+                        <tr
+                          class="hover:bg-purple-50/40 cursor-pointer"
+                          onclick={() => goto(`/candidates/${c.candidate_id}`)}
+                        >
+                          <td class="px-4 py-2 font-medium text-gray-900">
+                            {c.first_name ?? ''} {c.last_name ?? ''}
+                          </td>
+                          <td class="px-4 py-2 text-gray-700 truncate max-w-[14rem]">{c.email ?? '-'}</td>
+                          <td class="px-4 py-2 text-gray-700">{c.phone ?? '-'}</td>
+                          <td class="px-4 py-2 text-gray-700">
+                            {c.candidate_resume_score != null ? `${Math.round(c.candidate_resume_score)}%` : '-'}
+                          </td>
+                          <td class="px-4 py-2">
+                            {#if c.aptitude_test_result === 'pass'}
+                              <span class="text-emerald-600">Passed</span>
+                            {:else if c.aptitude_test_result === 'fail'}
+                              <span class="text-red-600">Failed</span>
+                            {:else if c.aptitude_test}
+                              <span class="text-amber-600">In Progress</span>
+                            {:else}
+                              <span class="text-gray-400">Not Taken</span>
+                            {/if}
+                          </td>
+                          <td class="px-4 py-2">
+                            <StatusBadge status={c.status || 'applied'} size="sm" />
+                          </td>
+                          <td class="px-4 py-2 text-right text-gray-500 text-xs">
+                            {c.created_at ? formatDate(c.created_at) : '-'}
+                          </td>
+                        </tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
               <!-- Pipeline stages - cumulative view -->
-              <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+              <div>
+                <h4 class="text-base font-semibold text-gray-800 mb-3">Pipeline Overview</h4>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
                 {#each candidatesPipeline as stage}
                   <div class="rounded-lg bg-gray-50 border border-gray-200 overflow-hidden">
                     <!-- Stage header -->
@@ -471,6 +537,7 @@
                     </div>
                   </div>
                 {/each}
+              </div>
               </div>
             </div>
           {/if}

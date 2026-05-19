@@ -27,10 +27,13 @@
  */
 declare module '$env/static/private' {
 	export const LESSOPEN: string;
+	export const AI_AGENT: string;
 	export const LANGUAGE: string;
 	export const USER: string;
+	export const CLAUDE_CODE_ENTRYPOINT: string;
 	export const LC_TIME: string;
 	export const npm_config_user_agent: string;
+	export const GIT_EDITOR: string;
 	export const XDG_SESSION_TYPE: string;
 	export const PTYXIS_VERSION: string;
 	export const npm_node_execpath: string;
@@ -64,22 +67,27 @@ declare module '$env/static/private' {
 	export const MEMORY_PRESSURE_WATCH: string;
 	export const XDG_SESSION_CLASS: string;
 	export const USERNAME: string;
+	export const ANTHROPIC_BASE_URL: string;
 	export const TERM: string;
 	export const npm_config_cache: string;
 	export const GNOME_DESKTOP_SESSION_ID: string;
 	export const FLATPAK_TTY_PROGRESS: string;
 	export const npm_config_node_gyp: string;
 	export const PATH: string;
+	export const ANTHROPIC_API_KEY: string;
 	export const INVOCATION_ID: string;
 	export const PAPERSIZE: string;
 	export const NODE: string;
 	export const npm_package_name: string;
+	export const COREPACK_ENABLE_AUTO_PIN: string;
 	export const XDG_MENU_PREFIX: string;
 	export const PTYXIS_PROFILE: string;
 	export const LC_ADDRESS: string;
 	export const GNOME_SETUP_DISPLAY: string;
 	export const XDG_RUNTIME_DIR: string;
+	export const CLAUDE_EFFORT: string;
 	export const DISPLAY: string;
+	export const NoDefaultCurrentDirectoryInExePath: string;
 	export const LANG: string;
 	export const XDG_CURRENT_DESKTOP: string;
 	export const LC_TELEPHONE: string;
@@ -95,8 +103,10 @@ declare module '$env/static/private' {
 	export const npm_lifecycle_event: string;
 	export const QT_ACCESSIBILITY: string;
 	export const GDMSESSION: string;
+	export const CLAUDE_CODE_SESSION_ID: string;
 	export const LESSCLOSE: string;
 	export const ENVMAN_LOAD: string;
+	export const CLAUDECODE: string;
 	export const LC_MEASUREMENT: string;
 	export const GPG_AGENT_INFO: string;
 	export const LC_IDENTIFICATION: string;
@@ -109,6 +119,7 @@ declare module '$env/static/private' {
 	export const NVM_CD_FLAGS: string;
 	export const DBUS_STARTER_ADDRESS: string;
 	export const XDG_DATA_DIRS: string;
+	export const CLAUDE_CODE_EXECPATH: string;
 	export const npm_config_global_prefix: string;
 	export const LC_NUMERIC: string;
 	export const npm_command: string;
@@ -149,10 +160,13 @@ declare module '$env/static/public' {
 declare module '$env/dynamic/private' {
 	export const env: {
 		LESSOPEN: string;
+		AI_AGENT: string;
 		LANGUAGE: string;
 		USER: string;
+		CLAUDE_CODE_ENTRYPOINT: string;
 		LC_TIME: string;
 		npm_config_user_agent: string;
+		GIT_EDITOR: string;
 		XDG_SESSION_TYPE: string;
 		PTYXIS_VERSION: string;
 		npm_node_execpath: string;
@@ -186,22 +200,27 @@ declare module '$env/dynamic/private' {
 		MEMORY_PRESSURE_WATCH: string;
 		XDG_SESSION_CLASS: string;
 		USERNAME: string;
+		ANTHROPIC_BASE_URL: string;
 		TERM: string;
 		npm_config_cache: string;
 		GNOME_DESKTOP_SESSION_ID: string;
 		FLATPAK_TTY_PROGRESS: string;
 		npm_config_node_gyp: string;
 		PATH: string;
+		ANTHROPIC_API_KEY: string;
 		INVOCATION_ID: string;
 		PAPERSIZE: string;
 		NODE: string;
 		npm_package_name: string;
+		COREPACK_ENABLE_AUTO_PIN: string;
 		XDG_MENU_PREFIX: string;
 		PTYXIS_PROFILE: string;
 		LC_ADDRESS: string;
 		GNOME_SETUP_DISPLAY: string;
 		XDG_RUNTIME_DIR: string;
+		CLAUDE_EFFORT: string;
 		DISPLAY: string;
+		NoDefaultCurrentDirectoryInExePath: string;
 		LANG: string;
 		XDG_CURRENT_DESKTOP: string;
 		LC_TELEPHONE: string;
@@ -217,8 +236,10 @@ declare module '$env/dynamic/private' {
 		npm_lifecycle_event: string;
 		QT_ACCESSIBILITY: string;
 		GDMSESSION: string;
+		CLAUDE_CODE_SESSION_ID: string;
 		LESSCLOSE: string;
 		ENVMAN_LOAD: string;
+		CLAUDECODE: string;
 		LC_MEASUREMENT: string;
 		GPG_AGENT_INFO: string;
 		LC_IDENTIFICATION: string;
@@ -231,6 +252,7 @@ declare module '$env/dynamic/private' {
 		NVM_CD_FLAGS: string;
 		DBUS_STARTER_ADDRESS: string;
 		XDG_DATA_DIRS: string;
+		CLAUDE_CODE_EXECPATH: string;
 		npm_config_global_prefix: string;
 		LC_NUMERIC: string;
 		npm_command: string;
