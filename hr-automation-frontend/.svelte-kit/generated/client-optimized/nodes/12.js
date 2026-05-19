@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/(dashboard)/candidates/[candidate_id]/technical-interview/+page.svelte";

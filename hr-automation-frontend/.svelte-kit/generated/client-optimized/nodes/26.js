@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/aptitude/test/[job_id]/[test_id]/results/+page.svelte";
